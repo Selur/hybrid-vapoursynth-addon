@@ -5,11 +5,8 @@
 
 JOBS=4
 
-set -e
-set -x
+set -euxo pipefail
 
-export LD_LIBRARY_PATH=/usr/local/lib
-export PYTHONPATH=/usr/local/lib/python3.6/site-packag
 export CFLAGS="-pipe -O3 -fno-strict-aliasing -Wno-deprecated-declarations"
 export CXXFLAGS="$CFLAGS"
 
@@ -19,6 +16,7 @@ sudo apt install --no-install-recommends \
     build-essential \
     git \
     python3-pip \
+    python3-dev \
     autoconf \
     automake \
     libtool \
@@ -40,10 +38,9 @@ sudo apt install --no-install-recommends \
     libfftw3-dev \
     libpango1.0-dev \
     libopenjp2-?-dev \
-    libxml2-dev 
+    libxml2-dev \
+    cython3
 
-#newer cython3 than ships with Ubuntu 18.04 by default
-pip3 install Cython 
 
 #newer nasm than ships with Ubuntu 18.04
 ver="2.14.02"
@@ -109,18 +106,14 @@ cd FFmpeg
 make -j$JOBS
 sudo make install
 
-
 # VapourSynth
 rm -rf vapoursynth
 git clone https://github.com/vapoursynth/vapoursynth
 cd vapoursynth
-git checkout $(git tag | grep '^R' | sort -V | tail -1)
 ./autogen.sh
 ./configure
 make -j$JOBS
 sudo make install
-
-set +x
 
 s=$SECONDS
 printf "\nfinished after %d min %d sec\n" $(($s / 60)) $(($s % 60))
