@@ -1,0 +1,2 @@
+mkgh HomeOfVapourSynthEvolution/VapourSynth-NNEDI3CL libnnedi3cl
+install_nnedi3_weights

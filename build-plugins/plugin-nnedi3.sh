@@ -1,0 +1,2 @@
+mkgh dubhater/vapoursynth-nnedi3 libnnedi3
+install_nnedi3_weights
