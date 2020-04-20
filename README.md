@@ -17,13 +17,8 @@ Adding Vapoursynth and plugins to Hybrid
     API R3.6
     Options: -
     ```
-6. To make the exports permanent create a "/etc/profile.d/vapoursynth.sh"
-and put 
-    ```
-    export LD_LIBRARY_PATH=/usr/local/lib
-    export PYTHONPATH=/usr/local/lib/python3.6/site-packages
-    ```
-    in it and reboot your system. (`vspipe --version` should now work without having to enter the export calls)
+6. reboot your system.
+(`vspipe --version` should now work without having to enter the export calls)
 7. make the build-plugins.sh executable `chmod +x build-plugins.sh` and run it (this will take quite a while).
 
 Now Hybrid will be able to use Vapoursynth, but the Vapoursynth Preview will not work.
