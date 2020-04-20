@@ -6,7 +6,7 @@
 JOBS=4
 
 set -euxo pipefail
-
+export LD_LIBRARY_PATH=/usr/local/lib
 export CFLAGS="-pipe -O3 -fno-strict-aliasing -Wno-deprecated-declarations"
 export CXXFLAGS="$CFLAGS"
 

@@ -40,7 +40,7 @@ pip3 install -q --upgrade --user setuptools wheel  # must be installed first
 pip3 install -q --upgrade --user meson ninja
 
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
-plugins="waifu2x-w2xc"
+#plugins="waifu2x-w2xc"
 count=$(echo $plugins | wc -w)
 n=0
 
@@ -58,7 +58,7 @@ done
 
 echo ""
 
-pip3 uninstall -y -q setuptools wheel meson ninja
+sudo pip3 uninstall -y -q setuptools wheel meson ninja
 
 s=$SECONDS
 printf "\nfinished after %d min %d sec\n" $(($s / 60)) $(($s % 60))
