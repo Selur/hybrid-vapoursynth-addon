@@ -6,7 +6,9 @@
 JOBS=4
 
 set -euxo pipefail
-export LD_LIBRARY_PATH=/usr/local/lib
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+export /usr/local/lib/python3.6/site-packages:$PYTHONPATH
+sudo ldconfig
 export CFLAGS="-pipe -O3 -fno-strict-aliasing -Wno-deprecated-declarations"
 export CXXFLAGS="$CFLAGS"
 
@@ -105,6 +107,9 @@ cd FFmpeg
   --enable-vdpau
 make -j$JOBS
 sudo make install
+
+# install a newer Cython
+pip3 install Cython
 
 # VapourSynth
 rm -rf vapoursynth
