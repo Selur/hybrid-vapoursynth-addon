@@ -6,9 +6,8 @@
 JOBS=4
 
 set -euxo pipefail
-export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-export /usr/local/lib/python3.6/site-packages:$PYTHONPATH
-sudo ldconfig
+export LD_LIBRARY_PATH=/usr/local/lib
+export PYTHONPATH=/usr/local/lib/python3.6/site-packages
 export CFLAGS="-pipe -O3 -fno-strict-aliasing -Wno-deprecated-declarations"
 export CXXFLAGS="$CFLAGS"
 
