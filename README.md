@@ -7,7 +7,7 @@ Adding Vapoursynth and plugins to Hybrid
     export LD_LIBRARY_PATH=/usr/local/lib
     export PYTHONPATH=/usr/local/lib/python3.6/site-packages
     ```
-to your `~/.profile`-file, close the terminal and open a new terminal.
+to your `~/.profile`- and `~/.bashrc` -file, close the terminal and open a new terminal.
 ( Note: depending on your Python version you need to adjust _pyhton3.6_ accordingly)
 5. Calling `vspipe --version` should output something like:
     ```
