@@ -40,7 +40,7 @@ pip3 install -q --upgrade --user setuptools wheel  # must be installed first
 pip3 install -q --upgrade --user meson ninja
 
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
-#plugins="waifu2x-w2xc"
+#plugins="mvtoolssf"
 count=$(echo $plugins | wc -w)
 n=0
 

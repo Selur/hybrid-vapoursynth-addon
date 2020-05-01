@@ -21,6 +21,14 @@ ghdl ()
   cd build
 }
 
+ghc ()
+{
+  git clone https://github.com/$1 build
+  cd build
+  git checkout $2
+  git reset --hard
+}
+
 strip_copy ()
 {
   chmod a-x $1
@@ -72,6 +80,12 @@ build ()
   else
     finish ${1}.so
   fi
+}
+
+mkghc ()
+{
+  ghc $1 $3
+  build $2
 }
 
 mkgh ()
