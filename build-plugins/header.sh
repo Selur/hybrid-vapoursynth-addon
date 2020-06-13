@@ -96,7 +96,14 @@ mkgh ()
 
 set -x
 
-export LD_LIBRARY_PATH="/usr/local/lib;/usr/local/lib/vapoursynth"
-export CFLAGS="-pipe -O3 -Wno-attributes -fPIC -fvisibility=hidden -fno-strict-aliasing $(pkg-config --cflags vapoursynth) -I/usr/include/compute"
+vsprefix="$HOME/opt/vapoursynth"
+
+export PATH="$vsprefix/bin:$PATH"
+export LD_LIBRARY_PATH="$vsprefix/lib"
+export PYTHONUSERBASE="$vsprefix"
+export PKG_CONFIG_PATH="$vsprefix/lib/pkgconfig"
+export CFLAGS="-pipe -O3 -Wno-attributes -fPIC -fvisibility=hidden -fno-strict-aliasing $(pkg-config --c
+flags vapoursynth) -I/usr/include/compute"
 export CXXFLAGS="$CFLAGS -Wno-reorder"
+export LDFLAGS="-L$vsprefix/lib"
 
