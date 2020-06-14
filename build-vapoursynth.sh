@@ -1,23 +1,21 @@
 #!/bin/bash
 # should be a shell that provides $SECONDS
 
-# build script for Ubuntu 18.04 and hopefully newer
+# build script for Ubuntu 16.04 or newer
 
 JOBS=4
+#stamp="dependencies_for_vapoursynth_installed.stamp"
 
-set -euxo pipefail
-export LD_LIBRARY_PATH=/usr/local/lib
-export PYTHONPATH=/usr/local/lib/python3.6/site-packages
-export CFLAGS="-pipe -O3 -fno-strict-aliasing -Wno-deprecated-declarations"
-export CXXFLAGS="$CFLAGS"
+set -e
+set -x
 
-sudo apt update
-sudo apt upgrade
-sudo apt install --no-install-recommends \
+#if [ ! -e $stamp -a -x "/usr/bin/apt" ]; then
+  sudo apt update
+  sudo apt upgrade
+  sudo apt install --no-install-recommends \
     build-essential \
     git \
     python3-pip \
-    python3-dev \
     autoconf \
     automake \
     libtool \
@@ -39,59 +37,70 @@ sudo apt install --no-install-recommends \
     libfftw3-dev \
     libpango1.0-dev \
     libopenjp2-?-dev \
-    libxml2-dev \
-    cython3
+    libxml2-dev
 
+  #touch $stamp
+#fi
 
-#newer nasm than ships with Ubuntu 18.04
-ver="2.14.02"
-rm -rf nasm-${ver}
-wget -c https://www.nasm.us/pub/nasm/releasebuilds/$ver/nasm-${ver}.tar.xz
-tar xf nasm-${ver}.tar.xz
-cd nasm-$ver
-./configure
-make -j$JOBS
-sudo make install
-cd ..
-rm -rf nasm-$ver nasm-${ver}.tar.xz
+vsprefix="$HOME/opt/vapoursynth"
+
+export PATH="$vsprefix/bin:$PATH"
+export PKG_CONFIG_PATH="$vsprefix/lib/pkgconfig"
+export CFLAGS="-pipe -O3 -fno-strict-aliasing -Wno-deprecated-declarations"
+export CXXFLAGS="$CFLAGS"
+
+TOP="$PWD"
+
+mkdir build
+cd build
+
+# newer nasm
+if [ ! -x "$vsprefix/bin/nasm" ]; then
+  ver="2.14.02"
+  wget -c https://www.nasm.us/pub/nasm/releasebuilds/$ver/nasm-${ver}.tar.xz
+  tar xf nasm-${ver}.tar.xz
+  cd nasm-$ver
+  ./configure --prefix="$vsprefix"
+  make -j$JOBS
+  make install
+  cd ..
+fi
+
+#cat <<EOL >/dev/null
 
 # build zimg, needed by Vapoursynth
-rm -rf zimg
 git clone https://github.com/sekrit-twc/zimg
 cd zimg
 git checkout $(git tag | sort -V | tail -1)
 autoreconf -if
-./configure
+./configure --prefix="$vsprefix" --disable-static
 make -j$JOBS
-sudo make install
+make install-strip
 cd ..
 
 # build ImageMagick 7, needed by imwri plugin
-rm -rf ImageMagick
 git clone https://github.com/ImageMagick/ImageMagick
 cd ImageMagick
 git checkout $(git tag | grep '^7\.' | sort -V | tail -1)
-autoreconf -if
-./configure \
+PATH="$PWD:$PATH" autoreconf -if
+./configure --prefix="$vsprefix" \
   --disable-static \
   --disable-docs \
   --without-utilities \
   --enable-hdri \
   --with-quantum-depth=16
 make -j$JOBS
-sudo make install
+make install-strip
 cd ..
 
 # for nvidia support in ffmpeg
-rm -rf nv-codec-headers
 git clone --depth 1 https://github.com/FFmpeg/nv-codec-headers
-sudo make -C nv-codec-headers install
+make -C nv-codec-headers install PREFIX="$vsprefix"
 
-# ffmpeg libraries for gpu support
-rm -rf FFmpeg
+# ffmpeg
 git clone --depth 1 https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
-./configure \
+./configure --prefix="$vsprefix" \
   --disable-static \
   --enable-shared \
   --disable-programs \
@@ -105,19 +114,34 @@ cd FFmpeg
   --enable-vaapi \
   --enable-vdpau
 make -j$JOBS
-sudo make install
+make install
 
-# install a newer Cython
-pip3 install Cython
+#EOL
 
 # VapourSynth
-rm -rf vapoursynth
 git clone https://github.com/vapoursynth/vapoursynth
 cd vapoursynth
-./autogen.sh
-./configure
+git checkout $(git tag | grep '^R' | sort -V | tail -1)
+autoreconf -if
+./configure --prefix="$vsprefix" --disable-static --disable-vspipe --disable-vsscript --disable-python-module
 make -j$JOBS
-sudo make install
+make install-strip
+rm -f "$vsprefix"/lib/libvapoursynth-script.*
+make maintainer-clean
+
+export PYTHONUSERBASE="$PWD/temp"
+pip3 install -q --user cython
+./temp/bin/cython --3str src/cython/vapoursynth.pyx
+pip3 uninstall -y -q cython
+
+echo "$PWD"
+rm -rf .git
+cp -rf "$PWD" "$vsprefix/src"
+cp -f "$TOP/install-vs.sh" "$vsprefix"
+chmod a+x "$vsprefix/install-vs.sh"
+
+set +x
 
 s=$SECONDS
 printf "\nfinished after %d min %d sec\n" $(($s / 60)) $(($s % 60))
+
