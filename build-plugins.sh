@@ -103,7 +103,7 @@ done
 
 echo ""
 
-sudo pip3 uninstall -y -q setuptools wheel meson ninja
+pip3 uninstall -y -q setuptools wheel meson ninja
 
 s=$SECONDS
 printf "\nfinished after %d min %d sec\n" $(($s / 60)) $(($s % 60))
