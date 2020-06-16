@@ -80,6 +80,20 @@ mkgh ()
   build $2
 }
 
+ghc ()
+{
+  git clone https://github.com/$1 build
+  cd build
+  git checkout $2
+  git reset --hard
+}
+
+mkghc ()
+{
+  ghc $1 $3
+  build $2
+}
+
 set -x
 
 vsprefix="$HOME/opt/vapoursynth"

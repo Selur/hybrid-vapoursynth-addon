@@ -130,9 +130,10 @@ rm -f "$vsprefix"/lib/libvapoursynth-script.*
 make maintainer-clean
 
 export PYTHONUSERBASE="$PWD/temp"
-pip3 install -q --user cython
+pip3 install -q -I --user cython
 ./temp/bin/cython --3str src/cython/vapoursynth.pyx
 pip3 uninstall -y -q cython
+
 
 echo "$PWD"
 rm -rf .git
