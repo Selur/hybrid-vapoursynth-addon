@@ -1,6 +1,9 @@
-ghdl HomeOfAviSynthPlusEvolution/neo_FFT3D
-sed '/"COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:neo-fft3d> \"../Release_${VERSION}/${_DIR}/$<TARGET_FILE_NAME:neo-fft3d>\"' CMakeLists.txt
-cmake -DCMAKE_C_FLAGS="$CFLAGS" -DENABLE_SHARED=OFF -DENABLE_STATIC=ON
-
-build libneo-fft3d
-
+git clone https://github.com/HomeOfAviSynthPlusEvolution/neo_FFT3D.git
+cd neo_FFT3D
+cmake .
+make
+cd ../Release_*
+strip_copy libneo-fft3d.so
+cd ..
+rm -rf Release_*
+rm -rf neo_FFT3D
