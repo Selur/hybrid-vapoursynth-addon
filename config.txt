@@ -1,0 +1,31 @@
+# Install directory, in theory the only one variable you could change
+export VSPREFIX="$HOME/opt/vapoursynth"
+#
+# Jobs number, so the hyperthread cores number
+export JOBS=$(nproc)
+#
+#####################################################################
+# Read only part
+#
+my_pkg_config_path="$VSPREFIX/lib/pkgconfig"
+python3dotx=$(python3 -V | sed 's/.*\(3\.[0-9]*\).*/python\1/')
+vs_site_packages="$VSPREFIX/lib/$python3dotx/site-packages"
+
+if [ $( echo "$PATH" | egrep -Ec "(^|:)$VSPREFIX/bin(:|\$)" ) = "0" ]; then
+    export PATH="$VSPREFIX/bin:$PATH"
+fi
+if [ -z "$PKG_CONFIG_PATH" ]; then
+    export PKG_CONFIG_PATH="$my_pkg_config_path"
+elif [ $( echo "$PKG_CONFIG_PATH" | grep -Ec "(^|:)$my_pkg_config_path(:|\$)" ) = "0" ]; then
+    export PKG_CONFIG_PATH="$my_pkg_config_path:$PKG_CONFIG_PATH"
+fi
+if [ -z "$LD_LIBRARY_PATH" ]; then
+    export LD_LIBRARY_PATH="$VSPREFIX/lib"
+elif [ $( echo "$LD_LIBRARY_PATH" | grep -Ec "(^|:)$VSPREFIX/lib(:|\$)" ) = "0" ]; then
+    export LD_LIBRARY_PATH="$VSPREFIX/lib:$LD_LIBRARY_PATH"
+fi
+if [ -z "$PYTHONPATH" ]; then
+    export PYTHONPATH="$vs_site_packages"
+elif [ $( echo "$PYTHONPATH" | grep -Ec "(^|:)$vs_site_packages(:|\$)" ) = "0" ]; then
+    export PYTHONPATH="$vs_site_packages:$PYTHONPATH"
+fi

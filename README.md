@@ -5,10 +5,10 @@ Adding Vapoursynth and plugins to Hybrid
 4. When it's finished add:
     ```
     export LD_LIBRARY_PATH=/usr/local/lib
-    export PYTHONPATH=/usr/local/lib/python3.6/site-packages
+    export PYTHONPATH=~/opt/vapoursynth/lib/python3.6/site-packages
     ```
 to your `~/.profile`- and `~/.bashrc` -file, close the terminal and open a new terminal.
-( Note: depending on your Python version you need to adjust _pyhton3.6_ accordingly)
+( Note: depending on your Python version you need to adjust _pyhton3.6_ accordingly and if you changed the default paths inside the config.txt youe need to adjust them here too)
 5. Calling `vspipe --version` should output something like:
     ```
     VapourSynth Video Processing Library
@@ -21,6 +21,6 @@ to your `~/.profile`- and `~/.bashrc` -file, close the terminal and open a new t
 (`vspipe --version` should now work without having to enter the export calls)
 7. make the build-plugins.sh executable `chmod +x build-plugins.sh` and run it (this will take quite a while).
 
-Now Hybrid will be able to use Vapoursynth, but the Vapoursynth Preview will not work.
+Now Hybrid will be able to use Vapoursynth.
 
 

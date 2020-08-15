@@ -1,24 +1,20 @@
-#!/bin/bash
-# should be a shell that provides $SECONDS
+#!/bin/sh
+# Caution: this script is for ubuntu 16.04 or newer
 set -e
+s_begin=$( date "+%s")
 
-JOBS=4
-#stamp="dependencies_for_plugins_installed.stamp"
+. ./config.txt
+export CFLAGS="-pipe -O3 -fno-strict-aliasing -Wno-deprecated-declarations"
+export CXXFLAGS="$CFLAGS"
 
-vsprefix="$HOME/opt/vapoursynth"
-
-export PATH="$vsprefix/bin:$PATH"
-export LD_LIBRARY_PATH="$vsprefix/lib"
-export PKG_CONFIG_PATH="$vsprefix/lib/pkgconfig"
-
-if [ ! -e "$vsprefix/lib/pkgconfig/vapoursynth.pc" -a ! -e "$vsprefix/lib/pkgconfig/libavcodec.pc" ]; then
-  echo "error: missing a local installation of FFmpeg libraries and Vapoursynth in \`$vsprefix'"
+if [ ! -e "$my_pkg_config_path/vapoursynth.pc" -a\
+     ! -e "$my_pkg_config_path/libavcodec.pc" ]; then
+  echo "error: missing a local installation of FFmpeg libraries and Vapoursynth in \`$VSPREFIX'"
+  echo "Have you forgotten to run \`build-vapoursynth.sh' before ?"
   exit 1
 fi
 
 #if [ ! -e $stamp -x "/usr/bin/apt" ]; then
-  set -x
-
   sudo apt update
   sudo apt upgrade
   sudo apt install --no-install-recommends \
@@ -41,71 +37,70 @@ fi
     libboost-system-dev \
     libbluray-dev \
     libpng-dev
-
   # only on Ubuntu 16.04 ...
-  #sudo apt install --no-install-recommends libcompute-dev || true
-
-#  touch $stamp
-
-  set +x
+  # sudo apt install --no-install-recommends libcompute-dev || true
+  #touch $stamp
 #fi
-
+  
+rm -rf build
 mkdir -p build/logs
 cd build
+build_pwd=$PWD
 
 # newer nasm
-if [ ! -x "$vsprefix/bin/nasm" ]; then
-  set -x
+if [ ! -x "$VSPREFIX/bin/nasm" ]; then
   ver="2.14.02"
   wget -c https://www.nasm.us/pub/nasm/releasebuilds/$ver/nasm-${ver}.tar.xz
   tar xf nasm-${ver}.tar.xz
   cd nasm-$ver
-  ./configure --prefix="$vsprefix"
+  ./configure --prefix="$VSPREFIX"
   make -j$JOBS
   make install
-  cd ..
+  cd $build_pwd
   rm -rf nasm-$ver nasm-${ver}.tar.xz
-  set +x
 fi
 
 # newer cmake
-if [ ! -x "$vsprefix/bin/cmake" ]; then
-  set -x
+if [ ! -x "$VSPREFIX/bin/cmake" ]; then
   ver="3.14.6"
   dir="cmake-${ver}-Linux-x86_64"
   wget -c https://github.com/Kitware/CMake/releases/download/v$ver/${dir}.tar.gz
   tar xf ${dir}.tar.gz
-  cp -rf $dir/bin $dir/share "$vsprefix"
+  cp -rf $dir/bin $dir/share "$VSPREFIX"
   rm -rf $dir ${dir}.tar.gz
-  set +x
 fi
 
-export PYTHONUSERBASE="$vsprefix"
-pip3 install -q --upgrade --user setuptools wheel  # must be installed first
-pip3 install -q --upgrade --user meson ninja
-
+pip3 install -q -I --upgrade --user setuptools wheel  # must be installed first
+pip3 install -q -I --upgrade --user meson ninja
+echo $PWD
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
-#plugins=( "fft3dfilter" )
+#plugins=( "mvtoolssf" )
 count=$(echo $plugins | wc -w)
 n=0
 
 echo ""
 echo "Build plugins:"
 
+# To avoid errors of inattention... but the correct VSPREFIX is in uppercase!
+export vsprefix="$VSPREFIX"
+
 for p in $plugins ; do
-  rm -rf build # remove old stuff
   cat ../build-plugins/header.sh ../build-plugins/plugin-${p}.sh > build.sh # copy current build script
   n=$(($n + 1)) # increace counter
   printf " %s (%d/%d) ... " $p $n $count  # show progress
-  sh ./build.sh >logs/${p}.log 2>&1 && echo "done" || echo "failed" # execute build script and send output to log file
+  bash ./build.sh >logs/${p}.log 2>&1 && echo "done" || echo "failed" # execute build script and send output to log file
   rm -rf build build.sh # remove build folder and build script
 done
 
-echo ""
+unset vsprefix
 
 pip3 uninstall -y -q setuptools wheel meson ninja
 
-s=$SECONDS
-printf "\nfinished after %d min %d sec\n" $(($s / 60)) $(($s % 60))
+cd $build_pwd/..
+rm -rf build
+
+s_end=$( date "+%s")
+s=$(($s_end - $s_begin))
+printf "\nFinished after %d min %d sec\n" $(($s / 60)) $(($s % 60))
 
 
