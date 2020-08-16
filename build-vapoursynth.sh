@@ -142,7 +142,7 @@ if [ ! -x "$VSPREFIX/bin/vspipe" ]; then
   pip3 uninstall -y -q cython
   export PYTHONUSERBASE="$old_pythonuserbase"
 
-  mkdir -p "$vs_site_packages" "$VSPREFIX/include/vapoursynth" "$VSPREFIX/vsplugins"
+  mkdir -p "${vs_site_packages}" "$VSPREFIX/include/vapoursynth" "$VSPREFIX/vsplugins"
   cp include/*.h "$VSPREFIX/include/vapoursynth"
 
   cd $build_pwd
@@ -160,7 +160,7 @@ cat <<EOF >"$VSPREFIX/env.sh"
 # which is in the read only \$VSPREFIX variable.
 #
 export VSPREFIX="$VSPREFIX"
-vs_site_packages="$vs_site_packages"
+vs_site_packages="${vs_site_packages}"
 #
 if [ \$( echo "\$PATH" | egrep -Ec "(^|:)\$VSPREFIX/bin(:|\$)" ) = "0" ]; then
   export PATH="\$VSPREFIX/bin:\$PATH"
@@ -171,9 +171,9 @@ elif [ \$( echo "\$LD_LIBRARY_PATH" | egrep -Ec "(^|:)\$VSPREFIX/lib(:|\$)" ) = 
     export LD_LIBRARY_PATH="\$VSPREFIX/lib:\$LD_LIBRARY_PATH"
 fi
 if [ -z "\$PYTHONPATH" ]; then
-  export PYTHONPATH="\$vs_site_packages"
-elif [ \$( echo "\$PYTHONPATH" | grep -Ec "(^|:)\$vs_site_packages(:|\$)" ) = "0" ]; then
-  export PYTHONPATH="\$vs_site_packages:\$PYTHONPATH"
+  export PYTHONPATH="\${vs_site_packages}"
+elif [ \$( echo "\$PYTHONPATH" | grep -Ec "(^|:)\${vs_site_packages}(:|\$)" ) = "0" ]; then
+  export PYTHONPATH="\${vs_site_packages}:\$PYTHONPATH"
 fi
 EOF
 cat <<EOF >"$VSPREFIX/env.csh"
@@ -183,7 +183,7 @@ cat <<EOF >"$VSPREFIX/env.csh"
 # which is in the read only \$VSPREFIX variable.
 #
 setenv VSPREFIX "$VSPREFIX"
-set vs_site_packages="$vs_site_packages"
+set vs_site_packages="${vs_site_packages}"
 #
 if ( \`echo "\$PATH" | grep -Ec "(^|:)\$VSPREFIX/bin(:|"'$'")"\` == "0" ) then
   setenv PATH "\$VSPREFIX/bin:\$PATH"
@@ -194,9 +194,9 @@ else if ( \`echo "\$LD_LIBRARY_PATH" | grep -Ec "(^|:)\$VSPREFIX/lib(:|"'$'")"\`
     setenv LD_LIBRARY_PATH "\$VSPREFIX/lib:\$LD_LIBRARY_PATH"
 endif
 if ( ! \${?PYTHONPATH} ) then
-  setenv PYTHONPATH "\$vs_site_packages"
-else if ( \`echo "\$PYTHONPATH" | grep -Ec "(^|:)\$vs_site_packages(:|"'$'")"\` == "0" ) then
-  setenv PYTHONPATH "\$vs_site_packages:\$PYTHONPATH"
+  setenv PYTHONPATH "\${vs_site_packages}"
+else if ( \`echo "\$PYTHONPATH" | grep -Ec "(^|:)\${vs_site_packages}(:|"'$'")"\` == "0" ) then
+  setenv PYTHONPATH "\${vs_site_packages}:\$PYTHONPATH"
 endif
 EOF
 
