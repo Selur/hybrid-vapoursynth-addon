@@ -9,6 +9,7 @@ Adding Vapoursynth and plugins to Hybrid
     ```
 to your `~/.profile`- and `~/.bashrc` -file, close the terminal and open a new terminal.
 ( Note: depending on your Python version you need to adjust _pyhton3.6_ accordingly and if you changed the default paths inside the config.txt youe need to adjust them here too)
+
 5. Calling `vspipe --version` should output something like:
     ```
     VapourSynth Video Processing Library
