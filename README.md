@@ -7,9 +7,13 @@ Adding Vapoursynth and plugins to Hybrid
     export LD_LIBRARY_PATH=/usr/local/lib
     export PYTHONPATH=~/opt/vapoursynth/lib/python3.6/site-packages
     export PATH="~/opt/vapoursynth/bin:$PATH"
+    export PATH="~/.local/bin:$PATH"
     ```
-to your `~/.profile`- and `~/.bashrc` -file, close the terminal and open a new terminal.
-( Note: depending on your Python version you need to adjust _pyhton3.6_ accordingly and if you changed the default paths inside the config.txt youe need to adjust them here too)
+  to your `~/.profile`- and `~/.bashrc` -file, close the terminal and open a new terminal.
+  
+  Side notes:
+  * depending on your Python version you need to adjust _pyhton3.6_ accordingly and if you changed the default paths inside the config.txt youe need to adjust them here too.
+  * in Ubuntu 20.04 I had to use absolute paths so instead of ~/... I had to use /home/selur/...
 
 5. Calling `vspipe --version` should output something like:
     ```
