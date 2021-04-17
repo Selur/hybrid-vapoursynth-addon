@@ -1,3 +1,5 @@
-hg clone https://bitbucket.org/James1201/vapoursynth-sangnom build
-cd build
-build libsangnom
+ghdl dubhater/vapoursynth-sangnom
+CFLAGS="$CFLAGS -Wno-deprecated-declarations" meson build --prefix="$vsprefix"
+ninja -C build -j $JOBS
+ninja -C build install -j $JOBS
+
