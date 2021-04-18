@@ -4,12 +4,12 @@ Adding Vapoursynth and plugins to Hybrid
 3. make the build-vapoursynth.sh script executable `chmod +x build-vapoursynth.sh` and run it.
 4. When it's finished add:
     ```
-    export LD_LIBRARY_PATH=/usr/local/lib
+    export LD_LIBRARY_PATH=~/opt/vapoursynth/lib
     export PYTHONPATH=~/opt/vapoursynth/lib/python3.6/site-packages
     export PATH="~/opt/vapoursynth/bin:$PATH"
     export PATH="~/.local/bin:$PATH"
     ```
-  to your `~/.profile`- and `~/.bashrc` -file, close the terminal and open a new terminal.
+  to your `~/.profile`- and `~/.bashrc` -file, close the terminal and open a new terminal, best use absolute paths.
   
   Side notes:
   * depending on your Python version you need to adjust _pyhton3.6_ accordingly and if you changed the default paths inside the config.txt youe need to adjust them here too.
