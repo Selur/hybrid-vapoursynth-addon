@@ -14,6 +14,9 @@ if [ ! -e "$my_pkg_config_path/vapoursynth.pc" -a\
   exit 1
 fi
 
+# gcc++-11 is required for rife
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+
 #if [ ! -e $stamp -x "/usr/bin/apt" ]; then
   sudo apt update
   sudo apt upgrade
@@ -36,7 +39,9 @@ fi
     libboost-filesystem-dev \
     libboost-system-dev \
     libbluray-dev \
-    libpng-dev
+    libpng-dev \
+    g++-11 \
+    gcc-11
   # only on Ubuntu 16.04 ...
   # sudo apt install --no-install-recommends libcompute-dev || true
   #touch $stamp
@@ -74,7 +79,7 @@ pip3 install -q -I --upgrade --user setuptools wheel  # must be installed first
 pip3 install -q -I --upgrade --user meson ninja
 echo $PWD
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
-#plugins=( "mvtoolssf" )
+#plugins="rife"
 count=$(echo $plugins | wc -w)
 n=0
 
