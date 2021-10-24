@@ -93,7 +93,7 @@ ghc ()
 {
   git clone https://github.com/$1 build
   cd build
-  git checkout $2
+  git -c advice.detachedHead=false checkout $2
   git reset --hard
 }
 
