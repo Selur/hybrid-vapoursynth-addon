@@ -29,4 +29,17 @@ Adding Vapoursynth and plugins to Hybrid
 
 Now Hybrid will be able to use Vapoursynth.
 
-
+Note: building RIFE (https://github.com/HomeOfVapourSynthEvolution/VapourSynth-RIFE-ncnn-Vulkan)
+requires VULKAN SDK installed
+on Ubuntu 18.04:
+```
+wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
+sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-bionic.list http://packages.lunarg.com/vulkan/lunarg-vulkan-bionic.list
+sudo apt update
+sudo apt install vulkan-sdk
+```
+on Ubuntu 20.04:
+wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
+sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-focal.list http://packages.lunarg.com/vulkan/lunarg-vulkan-focal.list
+sudo apt update
+sudo apt install vulkan-sdk
