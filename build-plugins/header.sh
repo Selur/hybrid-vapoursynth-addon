@@ -33,7 +33,9 @@ strip_copy ()
   chmod a-x $1
   strip $1
   nm -D --extern-only $1 | grep -q 'T VapourSynthPluginInit'
-  cp -f $1 $VSPREFIX/lib/vapoursynth
+
+  mkdir -p "$VSPREFIX/lib/vapoursynth"
+  cp -f $1 $VSPREFIX/lib/vapoursynth/
 }
 
 finish ()

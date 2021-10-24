@@ -133,7 +133,7 @@ if [ ! -x "$VSPREFIX/bin/vspipe" ]; then
 
   git clone https://github.com/vapoursynth/vapoursynth
   cd vapoursynth
-  git checkout $(git tag | grep '^R' | sort -V | tail -1)
+  #git checkout $(git tag | grep '^R' | sort -V | tail -1)
   autoreconf -if
   ./configure --prefix="$VSPREFIX" --disable-static 
   make -j$JOBS

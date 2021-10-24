@@ -41,7 +41,8 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     libbluray-dev \
     libpng-dev \
     g++-11 \
-    gcc-11
+    gcc-11 \
+    python3-testresources
   # only on Ubuntu 16.04 ...
   # sudo apt install --no-install-recommends libcompute-dev || true
   #touch $stamp
