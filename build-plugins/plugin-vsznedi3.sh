@@ -1,2 +1,7 @@
-mkgh sekrit-twc/znedi3 vsznedi3
+#export CC=/usr/bin/gcc-11
+#export CXX=/usr/bin/g++-11
+
+ghc sekrit-twc/znedi3 r2
+git submodule update --init
+build vsznedi3
 install_nnedi3_weights
