@@ -1,0 +1,1 @@
+mkgh vapoursynth/vivtc libvivtc
