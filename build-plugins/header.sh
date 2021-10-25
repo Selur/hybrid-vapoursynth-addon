@@ -12,7 +12,7 @@ export LDFLAGS="-L$VSPREFIX/lib"
 
 install_nnedi3_weights ()
 {
-  p="$VSPREFIX/lib/vapoursynth"
+  p="$VSPREFIX/vsplugins"
   f="$p/nnedi3_weights.bin"
   sum="27f382430435bb7613deb1c52f3c79c300c9869812cfe29079432a9c82251d42"
   if [ ! -f $f ] || [ "$(sha256sum -b $f | head -c64)" != "$sum" ]; then
@@ -34,8 +34,8 @@ strip_copy ()
   strip $1
   nm -D --extern-only $1 | grep -q 'T VapourSynthPluginInit'
 
-  mkdir -p "$VSPREFIX/lib/vapoursynth"
-  cp -f $1 $VSPREFIX/lib/vapoursynth/
+  mkdir -p "$VSPREFIX/vsplugins"
+  cp -f $1 $VSPREFIX/vsplugins/
 }
 
 finish ()
