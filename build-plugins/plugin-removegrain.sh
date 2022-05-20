@@ -1,1 +1,1 @@
-mkgh vapoursynth/vivtc libvivtc
+mkgh vapoursynth/vs-removegrain libremovegrain
