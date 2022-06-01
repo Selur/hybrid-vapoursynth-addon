@@ -89,6 +89,13 @@ mkgh ()
   build $2
 }
 
+mkghv ()
+{
+  ghdl $1
+  cd vapoursynth
+  build $2
+}
+
 ghc ()
 {
   git clone https://github.com/$1 build
