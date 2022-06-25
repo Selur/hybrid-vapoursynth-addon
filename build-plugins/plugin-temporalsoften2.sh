@@ -1,3 +1,1 @@
-ghdl darealshinji/scenechange
-gcc $CFLAGS $LDFLAGS -shared src/temporalsoften.c -o libtemporalsoften2.so -lm
-finish libtemporalsoften2.so
+mkgh dubhater/vapoursynth-temporalsoften2 libtemporalsoften2
