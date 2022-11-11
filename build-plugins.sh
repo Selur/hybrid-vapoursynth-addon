@@ -42,6 +42,7 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     libpng-dev \
     g++-11 \
     gcc-11 \
+    llvm-10 \
     python3-testresources
   # only on Ubuntu 16.04 ...
   # sudo apt install --no-install-recommends libcompute-dev || true
@@ -69,7 +70,7 @@ fi
 # newer cmake
 if [ ! -x "$VSPREFIX/bin/cmake" ]; then
 #  ver="3.14.6"
-  ver="3.16.0"
+  ver="3.19.0"
   dir="cmake-${ver}-Linux-x86_64"
   wget -c https://github.com/Kitware/CMake/releases/download/v$ver/${dir}.tar.gz
   tar xf ${dir}.tar.gz
@@ -81,7 +82,7 @@ pip3 install -q -I --upgrade --user setuptools wheel  # must be installed first
 pip3 install -q -I --upgrade --user meson ninja
 echo $PWD
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
-#plugins="grayworld"
+#plugins="akarin"
 count=$(echo $plugins | wc -w)
 n=0
 
