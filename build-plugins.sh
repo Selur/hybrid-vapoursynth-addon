@@ -42,7 +42,7 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     libpng-dev \
     g++-11 \
     gcc-11 \
-    llvm-10 \
+    llvm-11-dev \
     python3-testresources
   # only on Ubuntu 16.04 ...
   # sudo apt install --no-install-recommends libcompute-dev || true
