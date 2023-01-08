@@ -1,1 +1,1 @@
-mkgh vapoursynth/vs-imwri libimwri
+mkgh https://github.com/vapoursynth/vivtc libvivtc
