@@ -1,1 +1,1 @@
-mkgh https://github.com/vapoursynth/vivtc libvivtc
+mkgh vapoursynth/vivtc libvivtc
