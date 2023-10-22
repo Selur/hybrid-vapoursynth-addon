@@ -10,6 +10,41 @@ export CFLAGS="-pipe -O3 -Wno-attributes -fPIC -fvisibility=hidden -fno-strict-a
 export CXXFLAGS="$CFLAGS -Wno-reorder"
 export LDFLAGS="-L$VSPREFIX/lib"
 
+max_attempts=3
+
+
+retry_git_clone() {
+
+  local repo_url="$1"
+  local target_dir="$2"
+  local attempts=0
+
+  while true; do
+
+    if [ "$attempts" -ge "$max_attempts" ]; then
+      echo "Maximum number of clone attempts reached. Exiting."
+      exit 1
+    fi
+    if [ -n "$target_dir" ]; then
+      if git clone --depth 1 --recursive "$repo_url.git" "$target_dir"; then
+        break
+      else
+        attempts=$((attempts +1))
+        echo "clone attempt $attempts failed. Retrying in 5 seconds..."
+        sleep 5
+      fi
+    else
+      if git clone --depth 1 --recursive "$repo_url.git"; then
+        break
+      else
+        attempts=$((attempts +1))
+        echo "clone attempt $attempts failed. Retrying in 5 seconds..."
+        sleep 5
+      fi
+    fi
+  done
+}
+
 install_nnedi3_weights ()
 {
   p="$VSPREFIX/vsplugins"
@@ -24,7 +59,7 @@ install_nnedi3_weights ()
 
 ghdl ()
 {
-  git clone --depth 1 --recursive https://github.com/$1 build
+  retry_git_clone https://github.com/$1 build
   cd build
 }
 
@@ -98,7 +133,7 @@ mkghv ()
 
 ghc ()
 {
-  git clone https://github.com/$1 build
+  retry_git_clone https://github.com/$1 build
   cd build
   git -c advice.detachedHead=false checkout $2
   git reset --hard

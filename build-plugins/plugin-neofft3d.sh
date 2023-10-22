@@ -1,4 +1,4 @@
-git clone https://github.com/HomeOfAviSynthPlusEvolution/neo_FFT3D.git
+retry_git_clone https://github.com/HomeOfAviSynthPlusEvolution/neo_FFT3D
 cd neo_FFT3D
 cmake .
 make

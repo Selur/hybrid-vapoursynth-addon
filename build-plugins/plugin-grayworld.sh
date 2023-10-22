@@ -1,4 +1,4 @@
-git clone https://github.com/Asd-g/AviSynthPlus-grayworld
+retry_git_clone https://github.com/Asd-g/AviSynthPlus-grayworld
 cd AviSynthPlus-grayworld
 mkdir build
 cd build

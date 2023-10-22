@@ -63,9 +63,46 @@ if [ ! -x "$VSPREFIX/bin/nasm" ]; then
   rm -fr nasm-$ver nasm-${ver}.tar.xz
 fi
 
+max_attempts=3
+
+
+retry_git_clone() {
+
+  local repo_url="$1"
+  local target_dir="$2"
+  local attempts=0
+
+
+
+  while true; do
+
+    if [ "$attempts" -ge "$max_attempts" ]; then
+      echo "Maximum number of clone attempts reached. Exiting."
+      exit 1
+    fi
+    if [ -n "$target_dir" ]; then
+      if git clone --depth 1 "$repo_url" "$target_dir"; then
+        break
+      else
+        attempts=$((attempts +1))
+        echo "clone attempt $attempts failed. Retrying in 5 seconds..."
+        sleep 5
+      fi
+    else
+      if git clone --depth 1 "$repo_url"; then
+        break
+      else
+        attempts=$((attempts +1))
+        echo "clone attempt $attempts failed. Retrying in 5 seconds..."
+        sleep 5
+      fi
+    fi
+  done
+}
+
 # build zimg, needed by Vapoursynth
 if [ ! -f "$my_pkg_config_path/zimg.pc" ]; then
-  git clone https://github.com/sekrit-twc/zimg
+  retry_git_clone https://github.com/sekrit-twc/zimg
   cd zimg
   git checkout $(git tag | sort -V | tail -1)
   autoreconf -if
@@ -78,7 +115,7 @@ fi
 
 # build ImageMagick 7, needed by imwri plugin
 if [ ! -f "$my_pkg_config_path/Magick++.pc" ]; then
-  git clone https://github.com/ImageMagick/ImageMagick
+  retry_git_clone https://github.com/ImageMagick/ImageMagick
   old_pwd=$PWD  
   cd ImageMagick
   git checkout $(git tag | grep '^7\.' | sort -V | tail -1)
@@ -97,14 +134,14 @@ fi
 
 # for nvidia support in ffmpeg
 if [ ! -f "$my_pkg_config_path/ffnvcodec.pc" ]; then
-  git clone --depth 1 https://github.com/FFmpeg/nv-codec-headers
+  retry_git_clone https://github.com/FFmpeg/nv-codec-headers.git
   make -C nv-codec-headers install PREFIX="$VSPREFIX"
   rm -fr nv-codec-headers
 fi
 
 # ffmpeg
 if [ ! -f "$my_pkg_config_path/libavcodec.pc" ]; then
-  git clone --depth 1 https://github.com/FFmpeg/FFmpeg --branch release/4.4 
+  git clone https://github.com/FFmpeg/FFmpeg --branch release/6.0 
   cd FFmpeg
   ./configure --prefix="$VSPREFIX" \
     --disable-static \
@@ -112,7 +149,6 @@ if [ ! -f "$my_pkg_config_path/libavcodec.pc" ]; then
     --disable-programs \
     --disable-doc \
     --disable-debug \
-    --enable-avresample \
     --enable-ffnvcodec \
     --enable-nvdec \
     --enable-nvenc \
@@ -131,7 +167,7 @@ if [ ! -x "$VSPREFIX/bin/vspipe" ]; then
   export PYTHONUSERBASE="$PWD/temp"
   pip3 install -q -I --user cython
 
-  git clone https://github.com/vapoursynth/vapoursynth
+  retry_git_clone https://github.com/vapoursynth/vapoursynth
   cd vapoursynth
   #git checkout $(git tag | grep '^R' | sort -V | tail -1)
   autoreconf -if
