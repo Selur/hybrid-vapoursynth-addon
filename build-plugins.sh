@@ -43,6 +43,7 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     g++-11 \
     gcc-11 \
     llvm-11-dev \
+    libjansson-dev \
     python3-testresources
   # only on Ubuntu 16.04 ...
   # sudo apt install --no-install-recommends libcompute-dev || true
@@ -82,7 +83,7 @@ pip3 install -q -I --upgrade --user setuptools wheel  # must be installed first
 pip3 install -q -I --upgrade --user meson ninja
 echo $PWD
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
-#plugins="akarin"
+#plugins="vslsmashsource"
 count=$(echo $plugins | wc -w)
 n=0
 
@@ -105,7 +106,7 @@ unset vsprefix
 pip3 uninstall -y -q setuptools wheel meson ninja
 
 cd $build_pwd/..
-rm -rf build
+#rm -rf build
 
 s_end=$( date "+%s")
 s=$(($s_end - $s_begin))
