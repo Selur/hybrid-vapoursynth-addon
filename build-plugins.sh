@@ -83,7 +83,7 @@ pip3 install -q -I --upgrade --user setuptools wheel  # must be installed first
 pip3 install -q -I --upgrade --user meson ninja
 echo $PWD
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
-#plugins="vslsmashsource"
+#plugins="neo-vague-denoiser"
 count=$(echo $plugins | wc -w)
 n=0
 
