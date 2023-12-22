@@ -105,6 +105,7 @@ if [ ! -f "$my_pkg_config_path/zimg.pc" ]; then
   retry_git_clone https://github.com/sekrit-twc/zimg
   cd zimg
   git checkout $(git tag | sort -V | tail -1)
+  git submodule update --init --recursive
   autoreconf -if
   ./configure --prefix="$VSPREFIX" --disable-static
   make -j$JOBS
