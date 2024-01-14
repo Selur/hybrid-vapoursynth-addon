@@ -1,10 +1,12 @@
---- lwlibav_video.c.ori	2023-12-20 22:44:08.387842399 +0100
-+++ lwlibav_video.c.mod	2023-12-20 22:41:05.225003527 +0100
-@@ -362,16 +362,8 @@
+diff --git a/common/lwlibav_video.c b/common/lwlibav_video.c
+index bf0e859..50a5169 100644
+--- a/common/lwlibav_video.c
++++ b/common/lwlibav_video.c
+@@ -362,16 +362,8 @@ use_lavf_frame_rate:
      }
      else
      {
--        if (vdhp->format->iformat->raw_codec_id)
+-        if (lwhp->raw_demuxer)
 -        {
 -            *framerate_num = (int64_t)stream->codecpar->framerate.num;
 -            *framerate_den = (int64_t)stream->codecpar->framerate.den;
@@ -14,8 +16,8 @@
 -            *framerate_num = (int64_t)stream->avg_frame_rate.num;
 -            *framerate_den = (int64_t)stream->avg_frame_rate.den;
 -        }        
-+        *framerate_num = (int64_t)stream->avg_frame_rate.num;
-+        *framerate_den = (int64_t)stream->avg_frame_rate.den;
++         *framerate_num = (int64_t)stream->avg_frame_rate.num;
++         *framerate_den = (int64_t)stream->avg_frame_rate.den;
      }
      return;
  }
