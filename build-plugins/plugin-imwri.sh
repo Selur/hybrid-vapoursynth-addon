@@ -5,8 +5,12 @@ ghdl ImageMagick/ImageMagick imagmgck
 make
 sudo make install
 sudo ldconfig
-sudo mv /usr/bin/convert /usr/bin/convert.old
-sudo mv /usr/bin/conjure /usr/bin/conjure.old
+if [ -e "/usr/bin/convert"]; then
+  sudo mv /usr/bin/convert /usr/bin/convert.old
+fi
+if [ -e "/usr/bin/conjure"]; then
+  sudo mv /usr/bin/conjure /usr/bin/conjure.old
+fi
 sudo apt remove libmagick++-6-headers \
 libmagick++-6.q16-dev \
 libmagick++-6.q16hdri-dev \
@@ -17,5 +21,5 @@ libmagickcore-dev \
 libmagickwand-6-headers \
 libmagickwand-6.q16-dev \
 libmagickwand-6.q16hdri-dev \
-libmagickwand-dev 
+libmagickwand-dev
 mkgh vapoursynth/vs-imwri libimwri
