@@ -86,9 +86,6 @@ echo $PWD
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
 #plugins="vslsmashsource"
 #plugins="bestsource"
-#plugins="assrender"
-#plugins="subtext"
-#plugins="wwxd"
 
 count=$(echo $plugins | wc -w)
 n=0
@@ -104,15 +101,15 @@ for p in $plugins ; do
   n=$(($n + 1)) # increace counter
   printf " %s (%d/%d) ... " $p $n $count  # show progress
   bash ./build.sh >logs/${p}.log 2>&1 && echo "done" || echo "failed" # execute build script and send output to log file
-  #rm -rf build build.sh # remove build folder and build script
+  rm -rf build build.sh # remove build folder and build script
 done
 
 unset vsprefix
 
 pip3 uninstall -y -q setuptools wheel meson ninja
 
-#cd $build_pwd/..
-#rm -rf build
+cd $build_pwd/..
+rm -rf build
 
 s_end=$( date "+%s")
 s=$(($s_end - $s_begin))
