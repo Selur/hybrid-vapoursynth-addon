@@ -1,4 +1,7 @@
-ghdl vapoursynth/bestsource
-#Now libp2p is included in bestsource as subplugin, it will conflict
-#retry_git_clone https://github.com/sekrit-twc/libp2p
-build libbestsource
+git clone https://github.com/vapoursynth/bestsource.git --depth=1 --recurse-submodules --shallow-submodules --remote-submodules build
+cd build
+meson setup build -Ddefault_library=static
+ninja -C build
+cd build
+finish bestsource.so
+cd ../..
