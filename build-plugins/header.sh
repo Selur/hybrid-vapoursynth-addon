@@ -83,7 +83,7 @@ finish ()
 build ()
 {
   if [ -f meson.build ]; then
-    meson build
+    meson setup build
     ninja -C build -j$JOBS
   elif [ -f waf ]; then
     python3 ./waf configure

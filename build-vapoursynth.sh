@@ -142,7 +142,7 @@ fi
 
 # ffmpeg
 if [ ! -f "$my_pkg_config_path/libavcodec.pc" ]; then
-  git clone https://github.com/FFmpeg/FFmpeg --branch release/6.0 
+  git clone https://github.com/FFmpeg/FFmpeg --branch release/6.1 
   cd FFmpeg
   ./configure --prefix="$VSPREFIX" \
     --disable-static \

@@ -45,7 +45,13 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     gcc-11 \
     llvm-11-dev \
     libjansson-dev \
-    python3-testresources
+    python3-testresources \
+    libxxhash-dev 
+    
+
+  #  libxxhash-dev Run-time dependency libxxhash for BestSource
+  
+    
   # only on Ubuntu 16.04 ...
   # sudo apt install --no-install-recommends libcompute-dev || true
   #touch $stamp
