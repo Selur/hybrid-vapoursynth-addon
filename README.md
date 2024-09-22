@@ -1,6 +1,3 @@
-PLUGINS BUILD SCRIPT IS BROKEN ATM. GOT NO TIME TO LOOK INTO IT
-=> no new Hybrid Linux release until I find time to look into it
-
 1. hybrid-vapoursynth-addon
 Adding Vapoursynth and plugins to Hybrid
 2. extract the folder to a temporary folder
