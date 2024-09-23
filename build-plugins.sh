@@ -46,11 +46,11 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     llvm-11-dev \
     libjansson-dev \
     python3-testresources \
-    libxxhash-dev 
-    
+    libxxhash-dev \
+    libturbojpeg0-dev
 
-  #  libxxhash-dev Run-time dependency libxxhash for BestSource
-  
+  # libxxhash-dev Run-time dependency libxxhash for BestSource
+  # libturbojpeg0-dev dependency turbojpeg for vsimagereader
     
   # only on Ubuntu 16.04 ...
   # sudo apt install --no-install-recommends libcompute-dev || true
