@@ -37,34 +37,35 @@ export CXXFLAGS="$CFLAGS"
     libpango1.0-dev \
     libopenjp2-7-dev \
     libxml2-dev \
-    lib$python3dotx \
-    lib$python3dotx-dev \
+    nasm \
     cython3
+
+#    lib$python3dotx \
+ #   lib$python3dotx-dev \
   #touch $stamp
 #fi
 
 TOP="$PWD"
-  
+
 rm -rf build
 mkdir build
 cd build
 build_pwd=$PWD
 
 # newer nasm
-if [ ! -x "$VSPREFIX/bin/nasm" ]; then
-  ver="2.14.02"
-  wget -c https://www.nasm.us/pub/nasm/releasebuilds/$ver/nasm-${ver}.tar.xz
-  tar xf nasm-${ver}.tar.xz
-  cd nasm-$ver
-  ./configure --prefix="$VSPREFIX"
-  make -j$JOBS
-  make install
-  cd $build_pwd
-  rm -fr nasm-$ver nasm-${ver}.tar.xz
-fi
+#if [ ! -x "$VSPREFIX/bin/nasm" ]; then
+#  ver="2.14.02"
+#  wget -c https://www.nasm.us/pub/nasm/releasebuilds/$ver/nasm-${ver}.tar.xz
+#  tar xf nasm-${ver}.tar.xz
+#  cd nasm-$ver
+#  ./configure --prefix="$VSPREFIX"
+#  make -j$JOBS
+#  make install
+#  cd $build_pwd
+#  rm -fr nasm-$ver nasm-${ver}.tar.xz
+#fi
 
 max_attempts=3
-
 
 retry_git_clone() {
 
@@ -102,6 +103,7 @@ retry_git_clone() {
 
 # build zimg, needed by Vapoursynth
 if [ ! -f "$my_pkg_config_path/zimg.pc" ]; then
+  echo "build zimg"
   retry_git_clone https://github.com/sekrit-twc/zimg
   cd zimg
   git checkout $(git tag | sort -V | tail -1)
@@ -116,6 +118,7 @@ fi
 
 # build ImageMagick 7, needed by imwri plugin
 if [ ! -f "$my_pkg_config_path/Magick++.pc" ]; then
+  echo "build ImageMagick"
   retry_git_clone https://github.com/ImageMagick/ImageMagick
   old_pwd=$PWD  
   cd ImageMagick
@@ -135,6 +138,7 @@ fi
 
 # for nvidia support in ffmpeg
 if [ ! -f "$my_pkg_config_path/ffnvcodec.pc" ]; then
+  echo "build nv-code-headers"
   retry_git_clone https://github.com/FFmpeg/nv-codec-headers.git
   make -C nv-codec-headers install PREFIX="$VSPREFIX"
   rm -fr nv-codec-headers
@@ -164,20 +168,20 @@ fi
 
 # VapourSynth, with an temp up-to-date cython install for security
 if [ ! -x "$VSPREFIX/bin/vspipe" ]; then
-  old_pythonuserbase="$PYTHONUSERBASE"
-  export PYTHONUSERBASE="$PWD/temp"
-  pip3 install -q -I --user cython
+#  old_pythonuserbase="$PYTHONUSERBASE"
+#  export PYTHONUSERBASE="$PWD/temp"
+#  pip3 install -q -I --user cython
 
   retry_git_clone https://github.com/vapoursynth/vapoursynth
   cd vapoursynth
-  #git checkout $(git tag | grep '^R' | sort -V | tail -1)
+  git checkout $(git tag | grep '^R' | sort -V | tail -1)
   autoreconf -if
   ./configure --prefix="$VSPREFIX" --disable-static 
   make -j$JOBS
   make install-strip
 
-  pip3 uninstall -y -q cython
-  export PYTHONUSERBASE="$old_pythonuserbase"
+#  pip3 uninstall -y -q cython
+#  export PYTHONUSERBASE="$old_pythonuserbase"
 
   mkdir -p "${vs_site_packages}" "$VSPREFIX/include/vapoursynth" "$VSPREFIX/vsplugins"
   cp include/*.h "$VSPREFIX/include/vapoursynth"
@@ -185,6 +189,7 @@ if [ ! -x "$VSPREFIX/bin/vspipe" ]; then
   cd $build_pwd
   rm -rf vapoursynth 
 fi
+
 
 cd $build_pwd/..
 rm -rf build
