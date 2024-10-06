@@ -14,7 +14,6 @@ if [ ! -e "$my_pkg_config_path/vapoursynth.pc" -a\
   exit 1
 fi
 
-# gcc++-11 is required for rife
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 
   sudo apt update
@@ -48,6 +47,7 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     python3-wheel \
     python-is-python3 \
     libxxhash-dev \
+    g++-11 \
     llvm-14 \
     llvm
 
@@ -72,7 +72,7 @@ fi
 echo $PWD
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
 #plugins="vslsmashsource"
-#plugins="akarin"
+#plugins="rife"
 
 count=$(echo $plugins | wc -w)
 n=0
