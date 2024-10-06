@@ -46,7 +46,9 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     libturbojpeg0-dev \
     python3-setuptools \
     python3-wheel \
+    python-is-python3 \
     libxxhash-dev \
+    llvm-14 \
     llvm
 
 rm -rf build
@@ -70,7 +72,7 @@ fi
 echo $PWD
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
 #plugins="vslsmashsource"
-#plugins="neof3kdb"
+#plugins="akarin"
 
 count=$(echo $plugins | wc -w)
 n=0
@@ -87,7 +89,7 @@ for p in $plugins ; do
   n=$(($n + 1)) # increace counter
   printf " %s (%d/%d) ... " $p $n $count  # show progress
   bash ./build.sh >logs/${p}.log 2>&1 && echo "done" || echo "failed" # execute build script and send output to log file
-   rm -rf build build.sh # remove build folder and build script
+  rm -rf build build.sh # remove build folder and build script
 done
 
 unset vsprefix
