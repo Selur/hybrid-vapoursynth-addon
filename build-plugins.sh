@@ -47,6 +47,8 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     python3-wheel \
     python-is-python3 \
     libxxhash-dev \
+    vulkan-validationlayers \
+     libvulkan1 \
     g++-11 \
     llvm-14 \
     llvm
