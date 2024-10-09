@@ -46,6 +46,7 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     llvm-11-dev \
     libjansson-dev \
     python3-testresources \
+    libvulkan1:i386 libvulkan1 vulkan-validationlayers \
     libxxhash-dev \
     libturbojpeg0-dev
 
@@ -91,7 +92,7 @@ pip3 install -q -I --upgrade --user meson ninja
 echo $PWD
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
 #plugins="vslsmashsource"
-#plugins="bestsource"
+#plugins="rife"
 
 count=$(echo $plugins | wc -w)
 n=0
