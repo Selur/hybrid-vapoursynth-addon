@@ -48,14 +48,13 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     python3-testresources \
     libvulkan1:i386 libvulkan1 vulkan-validationlayers \
     libxxhash-dev \
+    libgsl-dev \
     libturbojpeg0-dev
 
+  # libgsl-dev depencency for bore
   # libxxhash-dev Run-time dependency libxxhash for BestSource
   # libturbojpeg0-dev dependency turbojpeg for vsimagereader
     
-  # only on Ubuntu 16.04 ...
-  # sudo apt install --no-install-recommends libcompute-dev || true
-  #touch $stamp
 #fi
 
 rm -rf build
@@ -91,8 +90,7 @@ pip3 install -q -I --upgrade --user setuptools wheel  # must be installed first
 pip3 install -q -I --upgrade --user meson ninja
 echo $PWD
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
-#plugins="vslsmashsource"
-#plugins="rife"
+#plugins="bore"
 
 count=$(echo $plugins | wc -w)
 n=0
