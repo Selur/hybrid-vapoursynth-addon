@@ -1,4 +1,3 @@
-#!/bin/sh
 # -----------------------------------------------------------------------------------------
 # Scriptname: plugin-rife.sh https://github.com/styler00dollar/VapourSynth-RIFE-ncnn-Vulkan
 # Datum: $(date "+%Y-%m-%d")          # Date: $(date "+%Y-%m-%d")
