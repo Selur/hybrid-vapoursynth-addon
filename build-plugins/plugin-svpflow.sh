@@ -1,3 +1,11 @@
+##################################################################################
+#                                                                                #
+#                                 Plugin-svpflow                                 #
+#                                                                                #
+#                  https://www.svp-team.com/files/svp4-latest.php?linux          #
+#                            https://www.svp-team.com/                           #
+##################################################################################
+
 mkdir build
 cd build
 wget -O svpflow.zip https://www.svp-team.com/files/gpl/svpflow-4.3.0.168.zip

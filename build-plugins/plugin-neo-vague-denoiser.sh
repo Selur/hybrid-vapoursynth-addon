@@ -1,3 +1,11 @@
+##################################################################################
+#                                                                                #
+#                        Plugin-neo_Vague_Denoiser R2                            #
+#                                                                                #
+#                                                                                #
+#      https://github.com/HomeOfAviSynthPlusEvolution/neo_Vague_Denoiser         #
+##################################################################################
+
 git clone https://github.com/HomeOfAviSynthPlusEvolution/neo_Vague_Denoiser
 cd neo_Vague_Denoiser
 cmake .

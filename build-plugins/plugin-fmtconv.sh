@@ -1,5 +1,12 @@
+##################################################################################
+#                                                                                #
+#                             Plugin-fmtconv r30                                 #
+#                                                                                #
+#                                                                                #
+#                  https://gitlab.com/EleonoreMizo/fmtconv                       #
+##################################################################################
+
 ghdl EleonoreMizo/fmtconv
-#ghc EleonoreMizo/fmtconv r28
 cd build/unix
 autoreconf -if
 ./configure || cat config.log

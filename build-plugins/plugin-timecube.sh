@@ -1,3 +1,11 @@
+##################################################################################
+#                                                                                #
+#                           Plugin-timecube R3.1                                 #
+#                                                                                #
+#                                                                                #
+#                  https://github.com/sekrit-twc/timecube                        #
+##################################################################################
+
 ghdl sekrit-twc/timecube
 # check if g++ supports -mtune=skylake-avx512
 if ! echo "" | g++ -mtune=skylake-avx512 -xc++ -c- 2>/dev/null ; then
