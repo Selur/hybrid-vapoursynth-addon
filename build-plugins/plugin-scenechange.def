@@ -6,7 +6,12 @@
 #          https://github.com/darealshinji/vapoursynth-plugins                   #
 ##################################################################################
 
-#ghdl darealshinji/vapoursynth-plugins/tree/614d367e826b5f6bb0af33e1f91453f3ff7999ec/plugins/scenechange
-ghdl darealshinji/scenechange
-gcc $CFLAGS $LDFLAGS -shared src/scenechange.c -o libscenechange.so -lm
-finish libscenechange.so
+#  N O T E :
+#  --------
+# Plugin is not downloadable. Github asks for username and password.
+# This repository has been archived by the owner on Jul 13, 2019. It is now read-only.
+# So we disabled the plugin.   
+
+#ghdl darealshinji/scenechange
+#gcc $CFLAGS $LDFLAGS -shared src/scenechange.c -o libscenechange.so -lm
+#finish libscenechange.so
