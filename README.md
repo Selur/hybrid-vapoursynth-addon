@@ -1,3 +1,5 @@
+These build scripts are for Ubuntu 24.04 LTS and Debian Sid (in future the coming Debian 13) tested only.
+
 1. hybrid-vapoursynth-addon
 Adding Vapoursynth and plugins to Hybrid
 2. extract the folder to a temporary folder
@@ -13,7 +15,7 @@ Adding Vapoursynth and plugins to Hybrid
   
   Side notes:
   * depending on your Python version you need to adjust _pyhton3.6_ accordingly and if you changed the default paths inside the config.txt youe need to adjust them here too.
-  * in Ubuntu 20.04 I had to use absolute paths so instead of ~/... I had to use /home/selur/...
+  * (in Ubuntu 22.04 I had to use absolute paths so instead of ~/... I had to use /home/selur/...--> needs to be verified!)
 
 5. Calling `vspipe --version` should output something like:
     ```
