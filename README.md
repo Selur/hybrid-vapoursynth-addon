@@ -1,4 +1,5 @@
 These build scripts are for Ubuntu 24.04 LTS and Debian Sid (in future the coming Debian 13) tested only.
+Scripts are rewritten.They are slightly more modular. German and English messages were added.
 
 1. hybrid-vapoursynth-addon
 Adding Vapoursynth and plugins to Hybrid
