@@ -1,31 +1,75 @@
-# Install directory, in theory the only one variable you could change
-export VSPREFIX="$HOME/opt/vapoursynth"
+#!/bin/sh
+# -----------------------------------------------------------------------------
+# Scriptname: config.txt
+# Datum: $(date "+%Y-%m-%d")          # Date: $(date "+%Y-%m-%d")
+# Uhrzeit: $(date "+%H:%M:%S")        # Time: $(date "+%H:%M:%S")
+# Beschreibung: Diese Datei enthält die Konfiguration für das Skript,
+#               einschließlich der Umgebungsvariablen und Installationspfade.
 #
-# Jobs number, so the hyperthread cores number
-export JOBS=$(nproc)
-#
-#####################################################################
-# Read only part
-#
-my_pkg_config_path="$VSPREFIX/lib/pkgconfig"
-python3dotx=$(python3 -V | sed 's/.*\(3\.[0-9]*\).*/python\1/')
-vs_site_packages="$VSPREFIX/lib/$python3dotx/site-packages"
+# Description: This file contains the configuration for the script,
+#              including environment variables and installation paths.
+# -----------------------------------------------------------------------------
 
-if [ $( echo "$PATH" | egrep -Ec "(^|:)$VSPREFIX/bin(:|\$)" ) = "0" ]; then
-    export PATH="$VSPREFIX/bin:$PATH"
-fi
-if [ -z "$PKG_CONFIG_PATH" ]; then
+# Installationsverzeichnis
+# Installation directory
+export VSPREFIX="$HOME/opt/vapoursynth"
+
+# Anzahl der Jobs (alle verfügbaren Kerne nutzen)
+# Number of jobs (use all available cores)
+export JOBS=$(nproc)
+
+# Python-Version und Verzeichnis für site-packages
+# Python version and site-packages directory
+python3_version=$(python3 -c "import sys; print('python{}.{}'.format(sys.version_info.major, sys.version_info.minor))")
+vs_site_packages="$VSPREFIX/lib/$python3_version/site-packages"
+
+# PKG_CONFIG_PATH
+# PKG_CONFIG_PATH
+my_pkg_config_path="$VSPREFIX/lib/pkgconfig"
+
+# PATH aktualisieren
+# Update PATH
+case ":$PATH:" in
+    *":$VSPREFIX/bin:"*) : ;;  # Nichts tun, wenn bereits im PATH
+    *) export PATH="$VSPREFIX/bin:$PATH" ;;  # An PATH anfügen
+esac
+
+# PKG_CONFIG_PATH aktualisieren
+# Update PKG_CONFIG_PATH
+if [ -z "${PKG_CONFIG_PATH+x}" ]; then
     export PKG_CONFIG_PATH="$my_pkg_config_path"
-elif [ $( echo "$PKG_CONFIG_PATH" | grep -Ec "(^|:)$my_pkg_config_path(:|\$)" ) = "0" ]; then
-    export PKG_CONFIG_PATH="$my_pkg_config_path:$PKG_CONFIG_PATH"
+else
+    case ":$PKG_CONFIG_PATH:" in
+        *":$my_pkg_config_path:"*) : ;;  # Nichts tun, wenn bereits im PKG_CONFIG_PATH
+        *) export PKG_CONFIG_PATH="$my_pkg_config_path:$PKG_CONFIG_PATH" ;;  # An PKG_CONFIG_PATH anfügen
+    esac
 fi
-if [ -z "$LD_LIBRARY_PATH" ]; then
+
+# LD_LIBRARY_PATH aktualisieren
+# Update LD_LIBRARY_PATH
+if [ -z "${LD_LIBRARY_PATH+x}" ]; then
     export LD_LIBRARY_PATH="$VSPREFIX/lib"
-elif [ $( echo "$LD_LIBRARY_PATH" | grep -Ec "(^|:)$VSPREFIX/lib(:|\$)" ) = "0" ]; then
-    export LD_LIBRARY_PATH="$VSPREFIX/lib:$LD_LIBRARY_PATH"
+else
+    case ":$LD_LIBRARY_PATH:" in
+        *":$VSPREFIX/lib:"*) : ;;  # Nichts tun, wenn bereits im LD_LIBRARY_PATH
+        *) export LD_LIBRARY_PATH="$VSPREFIX/lib:$LD_LIBRARY_PATH" ;;  # An LD_LIBRARY_PATH anfügen
+    esac
 fi
-if [ -z "$PYTHONPATH" ]; then
+
+# PYTHONPATH aktualisieren
+# Update PYTHONPATH
+if [ -z "${PYTHONPATH+x}" ]; then
     export PYTHONPATH="$vs_site_packages"
-elif [ $( echo "$PYTHONPATH" | grep -Ec "(^|:)$vs_site_packages(:|\$)" ) = "0" ]; then
-    export PYTHONPATH="$vs_site_packages:$PYTHONPATH"
+else
+    case ":$PYTHONPATH:" in
+        *":$vs_site_packages:"*) : ;;  # Nichts tun, wenn bereits im PYTHONPATH
+        *) export PYTHONPATH="$vs_site_packages:$PYTHONPATH" ;;  # An PYTHONPATH anfügen
+    esac
 fi
+
+# Umgebungsvariablen zur Überprüfung ausgeben
+# Print environment variables for verification
+echo "PATH: $PATH"
+echo "PKG_CONFIG_PATH: ${PKG_CONFIG_PATH:-not set}"
+echo "LD_LIBRARY_PATH: ${LD_LIBRARY_PATH:-not set}"
+echo "PYTHONPATH: ${PYTHONPATH:-not set}"

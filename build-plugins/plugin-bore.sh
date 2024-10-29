@@ -1,9 +1,9 @@
 ##################################################################################
 #                                                                                #
-#                                   Plugin-KNLMeansCL V.1.1                      #
+#                          Plugin-Bore v0.1.1                                    #
 #                                                                                #
 #                                                                                #
-#                  https://github.com/Khanattila/KNLMeansCL                      #
+#                     https://github.com/OpusGang/bore                           #
 ##################################################################################
 
-mkgh Khanattila/KNLMeansCL libknlmeanscl
+mkgh OpusGang/bore libbore

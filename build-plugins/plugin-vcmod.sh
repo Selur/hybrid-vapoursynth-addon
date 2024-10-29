@@ -1,3 +1,11 @@
+##################################################################################
+#                                                                                #
+#                              Plugin-vs-vcmod                                   #
+#                                                                                #
+#                                                                                #
+#                  http://www.avisynth.nl/users/vcmohan/                         #
+##################################################################################
+
 mkdir build
 cd build
 wget http://www.avisynth.nl/users/vcmohan/vcmod/vcmod_src.7z

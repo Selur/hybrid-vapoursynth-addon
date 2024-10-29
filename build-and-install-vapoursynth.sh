@@ -1,4 +1,9 @@
 #!/bin/bash
+
+################################
+# Old script. Not updated yet! #
+################################
+
 # should be a shell that provides $SECONDS
 
 # build script for Ubuntu 16.04 or newer

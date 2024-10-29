@@ -1,3 +1,11 @@
+##################################################################################
+#                                                                                #
+#               Plugin-vs-L-SMASH-Works 20240408 1194.0.0.0                      #
+#                                                                                #
+#                                                                                #
+#        https://github.com/HomeOfAviSynthPlusEvolution/L-SMASH-Works            #
+##################################################################################
+
 ghdl HomeOfAviSynthPlusEvolution/L-SMASH-Works
 cp ../../patch/lwlibav_video.c.patch common
 cd common
