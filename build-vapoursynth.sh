@@ -119,18 +119,18 @@ build_package() {
 
     case "$package_name" in
       "zimg")
-        configure_options="--prefix=\"$VSPREFIX\" --disable-static"
+        configure_options="--prefix="$VSPREFIX" --disable-static"
         autoreconf -if || handle_error "Fehler beim Ausführen von autoreconf in '$package_name'." "Error running autoreconf in '$package_name'."
         ;;
       "ImageMagick")
-        configure_options="--prefix=\"$VSPREFIX\" --disable-static --disable-docs --without-utilities --enable-hdri --with-quantum-depth=16"
+        configure_options="--prefix="$VSPREFIX" --disable-static --disable-docs --without-utilities --enable-hdri --with-quantum-depth=16"
         autoreconf -if || handle_error "Fehler beim Ausführen von autoreconf in '$package_name'." "Error running autoreconf in '$package_name'."
         ;;
       "FFmpeg")
-        configure_options="--prefix=\"$VSPREFIX\" --disable-static --enable-shared --disable-programs --disable-doc --disable-debug --enable-ffnvcodec --enable-nvdec --enable-nvenc --enable-cuvid --enable-vaapi --enable-vdpau"
+        configure_options="--prefix="$VSPREFIX" --disable-static --enable-shared --disable-programs --disable-doc --disable-debug --enable-ffnvcodec --enable-nvdec --enable-nvenc --enable-cuvid --enable-vaapi --enable-vdpau"
         ;;
       "vapoursynth")
-        configure_options="--prefix=\"$VSPREFIX\" --disable-static"
+        configure_options="--prefix="$VSPREFIX" --disable-static"
         autoreconf -if || handle_error "Fehler beim Ausführen von autoreconf in '$package_name'." "Error running autoreconf in '$package_name'."
         ;;
       *)
