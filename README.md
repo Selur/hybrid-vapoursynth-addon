@@ -9,7 +9,7 @@ Adding Vapoursynth and plugins to Hybrid
 4. When it's finished add:
     ```
     export LD_LIBRARY_PATH=~/opt/vapoursynth/lib
-    export PYTHONPATH=~/opt/vapoursynth/lib/python3.6/site-packages
+    export PYTHONPATH=~/opt/vapoursynth/lib/python3.12/site-packages
     export PATH="~/opt/vapoursynth/bin:$PATH"
     export PATH="~/.local/bin:$PATH"
     ```
