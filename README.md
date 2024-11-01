@@ -1,4 +1,5 @@
 These build scripts are for Ubuntu 24.04 LTS and Debian Sid (in future the coming Debian 13) tested only.
+The used Python version is Python 3.12.
 Scripts are rewritten.They are slightly more modular. German and English messages were added.
 
 1. hybrid-vapoursynth-addon
@@ -15,14 +16,14 @@ Adding Vapoursynth and plugins to Hybrid
   to your `~/.profile`- and `~/.bashrc` -file, close the terminal and open a new terminal, best use absolute paths.
   
   Side notes:
-  * depending on your Python version you need to adjust _pyhton3.6_ accordingly and if you changed the default paths inside the config.txt youe need to adjust them here too.
-  * (in Ubuntu 22.04 I had to use absolute paths so instead of ~/... I had to use /home/selur/...--> needs to be verified!)
-
+  * depending on the used Python version you need to adjust it to _pyhton3.12_ accordingly and if you changed the default paths inside the config.txt youe need to adjust them here too.
+  
 5. Calling `vspipe --version` should output something like:
     ```
     VapourSynth Video Processing Library
-    Copyright (c) 2012-2020 Fredrik Mellbin
-    Core R49
+    Copyright (c) 2012-2024 Fredrik Mellbin
+    Core R70
+    API R4.1
     API R3.6
     Options: -
     ```
