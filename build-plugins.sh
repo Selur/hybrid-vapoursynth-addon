@@ -40,6 +40,19 @@ handle_error() {
   exit 1
 }
 
+# Funktion zur Aufräumarbeit
+cleanup() {
+  print_message "Aufräumarbeiten werden durchgeführt..." "Clean-up work is carried out..."
+  # temporäre Dateien löschen
+  if [ -d build ]; then
+    rm -rf build
+  fi
+}
+
+# Trap für EXIT und ERR
+trap 'cleanup; exit' EXIT
+trap 'cleanup; handle_error "Das Skript wurde mit einem Fehler beendet." "The script exited with an error."' ERR
+
 # Funktion zur Überprüfung der erforderlichen Pakete
 check_dependencies() {
   if [ ! -e "$my_pkg_config_path/vapoursynth.pc" ] && [ ! -e "$my_pkg_config_path/libavcodec.pc" ]; then
