@@ -166,7 +166,11 @@ fi
 if [ ! -x "$VSPREFIX/bin/vspipe" ]; then
   old_pythonuserbase="$PYTHONUSERBASE"
   export PYTHONUSERBASE="$PWD/temp"
-  pip3 install -q -I --user cython
+
+  sudo apt install python3-virtualenv
+  virtualenv .venv
+  . .venv/bin/activate
+  pip install cython
 
   retry_git_clone https://github.com/vapoursynth/vapoursynth
   cd vapoursynth
@@ -176,7 +180,8 @@ if [ ! -x "$VSPREFIX/bin/vspipe" ]; then
   make -j$JOBS
   make install-strip
 
-  pip3 uninstall -y -q cython
+  deactivate
+  rm -rf .venv
   export PYTHONUSERBASE="$old_pythonuserbase"
 
   mkdir -p "${vs_site_packages}" "$VSPREFIX/include/vapoursynth" "$VSPREFIX/vsplugins"
