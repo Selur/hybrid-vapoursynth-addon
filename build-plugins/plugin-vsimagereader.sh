@@ -1,3 +1,11 @@
+##################################################################################
+#                                                                                #
+#                           Plugin-vs-imagereader V0.2.1                         #
+#                                                                                #
+#                                                                                #
+#                  https://github.com/chikuzen/vsimagereader                     #
+##################################################################################
+
 # libjpeg-turbo may be provided by the system as static non-PIC library,
 # so we build it from source instead.
 

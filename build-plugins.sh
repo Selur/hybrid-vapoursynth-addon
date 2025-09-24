@@ -1,129 +1,206 @@
-#!/bin/sh
-# Caution: this script is for ubuntu 16.04 or newer
-set -e
-s_begin=$( date "+%s")
+#!/bin/bash
+# -----------------------------------------------------------------------------
+# Scriptname: build-plugins.sh
+# Datum: $(date "+%Y-%m-%d")
+# Uhrzeit: $(date "+%H:%M:%S")
+# Beschreibung: Dieses Skript installiert die erforderlichen Pakete und
+#               baut die Vapoursynth-Plugins. Es ist für Ubuntu 24.04 LTS oder
+#               neuer konzipiert und überprüft die Abhängigkeiten, bevor
+#               es mit dem Build-Prozess fortfährt.
+#
+# Description: This script installs the required packages and builds the
+#              Vapoursynth plugins. It is designed for Ubuntu 24.04 LTS or
+#              newer and checks for dependencies before proceeding with the
+#              build process.
+# -----------------------------------------------------------------------------
+
+set -euo pipefail
+
+s_begin=$(date "+%s")
 
 . ./config.txt
 export CFLAGS="-pipe -O3 -fno-strict-aliasing -Wno-deprecated-declarations"
 export CXXFLAGS="$CFLAGS"
 
-if [ ! -e "$my_pkg_config_path/vapoursynth.pc" -a\
-     ! -e "$my_pkg_config_path/libavcodec.pc" ]; then
-  echo "error: missing a local installation of FFmpeg libraries and Vapoursynth in \`$VSPREFIX'"
-  echo "Have you forgotten to run \`build-vapoursynth.sh' before ?"
+# Funktion zur Ausgabe von Meldungen in der richtigen Sprache
+print_message() {
+  case "$LANG" in
+    de_* )
+      printf "%b\n" "$1"
+      ;;
+    * )
+      printf "%b\n" "$2"
+      ;;
+  esac
+}
+
+# Funktion zur Fehlerbehandlung
+handle_error() {
+  print_message "$1" "$2"
   exit 1
-fi
+}
 
-# gcc++-11 is required for rife
-sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+# Funktion zur Aufräumarbeit
+cleanup() {
+  print_message "Aufräumarbeiten werden durchgeführt..." "Clean-up work is carried out..."
+  if [ -d build ]; then
+    rm -rf build
+  fi
+}
 
-#if [ ! -e $stamp -x "/usr/bin/apt" ]; then
+trap 'cleanup; exit' EXIT
+trap 'cleanup; handle_error "Das Skript wurde mit einem Fehler beendet." "The script exited with an error."' ERR
+
+# Funktion zur Überprüfung der erforderlichen Pakete
+check_dependencies() {
+  if [ ! -e "$my_pkg_config_path/vapoursynth.pc" ] && [ ! -e "$my_pkg_config_path/libavcodec.pc" ]; then
+    handle_error "Fehler: Fehlende lokale Installation der FFmpeg-Bibliotheken und Vapoursynth in \`$VSPREFIX'" \
+                 "error: missing a local installation of FFmpeg libraries and Vapoursynth in \`$VSPREFIX'"
+    print_message "Haben Sie vergessen, \`build-vapoursynth.sh' vorher auszuführen?" \
+                  "Have you forgotten to run \`build-vapoursynth.sh' before?"
+  fi
+}
+
+# Funktion zur Installation der Systempakete
+install_system_packages() {
   sudo apt update
-  sudo apt upgrade
-  sudo apt-get install libopencv-dev # install opencv first using apt-get
-  sudo apt install --no-install-recommends \
-    build-essential \
-    cmake \
-    yasm \
-    git \
-    wget \
-    mercurial \
-    unzip \
-    meson \
-    p7zip-full \
-    python3-pip \
-    zlib1g-dev \
-    libfftw3-dev \
-    libopencv-dev \
-    ocl-icd-opencl-dev \
-    opencl-headers \
-    libboost-dev \
-    libboost-filesystem-dev \
-    libboost-system-dev \
-    libbluray-dev \
-    libpng-dev \
-    g++-11 \
-    gcc-11 \
-    llvm-15-dev \
-    libjansson-dev \
-    python3-testresources \
-    libvulkan1 vulkan-validationlayers \
-    libxxhash-dev \
-    libgsl-dev \
-    libturbojpeg0-dev
+  sudo apt upgrade -y
 
-  # libgsl-dev depencency for bore
-  # libxxhash-dev Run-time dependency libxxhash for BestSource
-  # libturbojpeg0-dev dependency turbojpeg for vsimagereader
-    
-#fi
+  # Sicherstellen, dass opencv zuerst installiert ist
+  sudo apt-get install -y libopencv-dev
 
-rm -rf build
-mkdir -p build/logs
-cd build
-build_pwd=$PWD
+  # Installation der benötigten Pakete
+  sudo apt install --no-install-recommends -y \
+      build-essential cmake yasm git wget mercurial unzip meson p7zip-full \
+      python3-pip zlib1g-dev libfftw3-dev libopencv-dev ocl-icd-opencl-dev \
+      opencl-headers libboost-dev libboost-filesystem-dev libboost-system-dev \
+      libbluray-dev libpng-dev libjansson-dev python3-testresources libxxhash-dev \
+      libturbojpeg0-dev python3-setuptools python3-wheel python-is-python3 \
+      libxxhash-dev vulkan-validationlayers libvulkan1 g++ llvm \
+      libgsl-dev libheif-dev
 
-# newer nasm
-if [ ! -x "$VSPREFIX/bin/nasm" ]; then
-  ver="2.14.02"
-  wget -c https://www.nasm.us/pub/nasm/releasebuilds/$ver/nasm-${ver}.tar.xz
-  tar xf nasm-${ver}.tar.xz
-  cd nasm-$ver
-  ./configure --prefix="$VSPREFIX"
-  make -j$JOBS
-  make install
-  cd $build_pwd
-  rm -rf nasm-$ver nasm-${ver}.tar.xz
+  # Überprüfen, ob g++-11 und llvm-14 verfügbar sind und installieren
+  if command -v lsb_release &> /dev/null && [[ $(lsb_release -is) == "Ubuntu" ]]; then
+    sudo apt install -y g++-11 llvm-14
+  else
+    sudo apt install -y g++ llvm
+  fi
+}
+
+# Funktion zum Erstellen des Build-Verzeichnisses
+create_build_directory() {
+  if [ -d build ]; then
+    rm -rf build
+  fi
+  mkdir -p build/logs || handle_error "Fehler beim Erstellen des Build-Verzeichnisses." "Error creating build directory."
+  cd build || handle_error "Fehler beim Wechseln in das Build-Verzeichnis." "Error changing to build directory."
+}
+
+# Funktion zum Installieren von NASM
+install_nasm() {
+  if [ ! -x "$VSPREFIX/bin/nasm" ]; then
+    ver="2.14.02"
+    wget -c "https://www.nasm.us/pub/nasm/releasebuilds/$ver/nasm-${ver}.tar.xz" || handle_error "Fehler beim Herunterladen von NASM." "Error downloading NASM."
+    tar xf "nasm-${ver}.tar.xz"
+    cd "nasm-$ver" || handle_error "Fehler beim Wechseln in das NASM-Verzeichnis." "Error changing to NASM directory."
+    ./configure --prefix="$VSPREFIX"
+    make -j"$JOBS"
+    make install
+    cd .. || handle_error "Fehler beim Zurückwechseln in das vorherige Verzeichnis." "Error changing back to the previous directory."
+    rm -rf "nasm-$ver" "nasm-${ver}.tar.xz"
+  fi
+}
+
+# Globale Variable für spezifisches Plugin
+specific_plugin=""
+
+# Funktion zum Bauen der Plugins
+build_plugins() {
+  readarray -t plugins < <(find ../build-plugins -name 'plugin-*.sh' -exec basename {} .sh \; | sort)
+  local count=${#plugins[@]}
+  local n=0
+  local success=true
+  local failed_plugin=""
+
+  if [ -n "$specific_plugin" ]; then
+    print_message "\nDas Plugin '$specific_plugin' wird gebaut:\n" "\nBuilding the plugin '$specific_plugin':\n"
+  else
+    print_message "\nPlugins werden gebaut:\n" "\nBuilding plugins:\n"
+  fi
+
+  export vsprefix="$VSPREFIX"
+
+  if [ -n "$specific_plugin" ]; then
+    if [[ "$specific_plugin" != plugin-* ]]; then
+      specific_plugin="plugin-$specific_plugin"
+    fi
+  fi
+
+  for p in "${plugins[@]}"; do
+    if [ -n "$specific_plugin" ] && [ "$p" != "$specific_plugin" ]; then
+      continue
+    fi
+
+    n=$((n + 1))
+    if [ -n "$specific_plugin" ]; then
+      printf " %s (1/1) ... " "$p"
+    else
+      printf " %s (%d/%d) ... " "$p" "$n" "$count"
+    fi
+
+    cat "../build-plugins/header.sh" "../build-plugins/${p}.sh" > build.sh
+
+    if bash ./build.sh > "logs/${p}.log" 2>&1; then
+      print_message "fertig" "done"
+    else
+      print_message "fehlgeschlagen bei $p" "failed for $p"
+      success=false
+      failed_plugin="$p"
+    fi
+
+    if [ -d build ]; then
+      rm -rf build
+    fi
+    rm -f build.sh
+  done
+
+  unset vsprefix
+
+  if $success; then
+    if [ -n "$specific_plugin" ]; then
+      print_message "\nDas Plugin '$specific_plugin' wurde erfolgreich erstellt." "The plugin '$specific_plugin' was built successfully."
+    else
+      print_message "\nAlle Plugins wurden erfolgreich erstellt." "All plugins were built successfully."
+    fi
+  else
+    print_message "\nDas Plugin '$failed_plugin' konnte nicht erstellt werden." "The plugin '$failed_plugin' failed to build."
+  fi
+}
+
+if [ $# -gt 0 ]; then
+  specific_plugin="$1"
 fi
 
-# newer cmake
-if [ ! -x "$VSPREFIX/bin/cmake" ]; then
-#  ver="3.14.6"
-  ver="3.19.0"
-  dir="cmake-${ver}-Linux-x86_64"
-  wget -c https://github.com/Kitware/CMake/releases/download/v$ver/${dir}.tar.gz
-  tar xf ${dir}.tar.gz
-  cp -rf $dir/bin $dir/share "$VSPREFIX"
-  rm -rf $dir ${dir}.tar.gz
-fi
+main() {
+  check_dependencies
+  install_system_packages
+  create_build_directory
+  install_nasm
+  build_plugins
 
-sudo apt install python3-virtualenv
-virtualenv .venv
-. .venv/bin/activate
-pip install setuptools wheel # must be installed first
-pip install meson ninja
+  if cd ..; then
+    if [ -d build ]; then
+      rm -rf build
+    fi
+  else
+    handle_error "Fehler beim Zurückwechseln in das vorherige Verzeichnis." "Error changing back to the previous directory."
+  fi
 
-echo $PWD
-plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
-#plugins="bestsource"
-#plugins="akarin"
-#plugins="vslsmashsource"
+  s_end=$(date "+%s")
+  s=$((s_end - s_begin))
+  print_message "Fertig nach $((s / 60)) min $((s % 60)) sec" "Finished after $((s / 60)) min $((s % 60)) sec"
+  exit 0
+}
 
-count=$(echo $plugins | wc -w)
-n=0
+main
 
-echo ""
-echo "Build plugins:"
-
-# To avoid errors of inattention... but the correct VSPREFIX is in uppercase!
-export vsprefix="$VSPREFIX"
-
-for p in $plugins ; do
-  cat ../build-plugins/header.sh ../build-plugins/plugin-${p}.sh > build.sh # copy current build script
-  n=$(($n + 1)) # increace counter
-  printf " %s (%d/%d) ... " $p $n $count  # show progress
-  bash ./build.sh >logs/${p}.log 2>&1 && echo "done" || echo "failed" # execute build script and send output to log file
-  rm -rf build build.sh # remove build folder and build script
-done
-
-unset vsprefix
-
-deactivate
-rm -rf .venv
-
-#cd $build_pwd/..
-#rm -rf build
-
-s_end=$( date "+%s")
-s=$(($s_end - $s_begin))
-printf "\nFinished after %d min %d sec\n" $(($s / 60)) $(($s % 60))

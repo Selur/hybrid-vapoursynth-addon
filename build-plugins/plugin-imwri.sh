@@ -1,5 +1,14 @@
-#requires imagemagick at leat 7.0.0, provided is 6.9.11
-#we let imagemagik c6.9.11 installed because inkscape and gscan2pdf depend on
+##################################################################################
+#                                                                                #
+#                                   Plugin-vs-imwri R2                           #
+#                                                                                #
+#                                                                                #
+#                  https://github.com/vapoursynth/vs-imwri                       #
+##################################################################################
+
+#requires imagemagick at leat 700, provided is 6911\
+#we let imagemagik v6911 installed because inkscape and gscan2pdf depend on
+
 ghdl ImageMagick/ImageMagick imagmgck
 ./configure
 make
@@ -23,3 +32,5 @@ libmagickwand-6.q16-dev \
 libmagickwand-6.q16hdri-dev \
 libmagickwand-dev
 mkgh vapoursynth/vs-imwri libimwri
+cd ..
+rm -rf build
