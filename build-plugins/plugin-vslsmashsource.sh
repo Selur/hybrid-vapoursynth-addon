@@ -1,5 +1,5 @@
 ghdl HomeOfAviSynthPlusEvolution/L-SMASH-Works
-cp ../../patch/lwlibav_video.c.patch common
+#cp ../../patch/lwlibav_video.c.patch common
 cd common
 patch -p1 lwlibav_video.c < lwlibav_video.c.patch
 rm lwlibav_video.c.patch

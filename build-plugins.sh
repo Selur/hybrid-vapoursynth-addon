@@ -20,6 +20,7 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 #if [ ! -e $stamp -x "/usr/bin/apt" ]; then
   sudo apt update
   sudo apt upgrade
+  sudo apt-get install libopencv-dev # install opencv first using apt-get
   sudo apt install --no-install-recommends \
     build-essential \
     cmake \
@@ -43,10 +44,10 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     libpng-dev \
     g++-11 \
     gcc-11 \
-    llvm-11-dev \
+    llvm-15-dev \
     libjansson-dev \
     python3-testresources \
-    libvulkan1:i386 libvulkan1 vulkan-validationlayers \
+    libvulkan1 vulkan-validationlayers \
     libxxhash-dev \
     libgsl-dev \
     libturbojpeg0-dev
@@ -86,11 +87,17 @@ if [ ! -x "$VSPREFIX/bin/cmake" ]; then
   rm -rf $dir ${dir}.tar.gz
 fi
 
-pip3 install -q -I --upgrade --user setuptools wheel  # must be installed first
-pip3 install -q -I --upgrade --user meson ninja
+sudo apt install python3-virtualenv
+virtualenv .venv
+. .venv/bin/activate
+pip install setuptools wheel # must be installed first
+pip install meson ninja
+
 echo $PWD
 plugins=$(ls -1 ../build-plugins/plugin-*.sh | sed 's|^\.\./build-plugins/plugin-||g; s|\.sh$||g')
-#plugins="bore"
+#plugins="bestsource"
+#plugins="akarin"
+#plugins="vslsmashsource"
 
 count=$(echo $plugins | wc -w)
 n=0
@@ -111,13 +118,12 @@ done
 
 unset vsprefix
 
-pip3 uninstall -y -q setuptools wheel meson ninja
+deactivate
+rm -rf .venv
 
-cd $build_pwd/..
-rm -rf build
+#cd $build_pwd/..
+#rm -rf build
 
 s_end=$( date "+%s")
 s=$(($s_end - $s_begin))
 printf "\nFinished after %d min %d sec\n" $(($s / 60)) $(($s % 60))
-
-
