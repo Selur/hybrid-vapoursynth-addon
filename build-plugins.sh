@@ -76,15 +76,8 @@ install_system_packages() {
       opencl-headers libboost-dev libboost-filesystem-dev libboost-system-dev \
       libbluray-dev libpng-dev libjansson-dev python3-testresources libxxhash-dev \
       libturbojpeg0-dev python3-setuptools python3-wheel python-is-python3 \
-      libxxhash-dev vulkan-validationlayers libvulkan1 g++ llvm \
-      libgsl-dev libheif-dev
-
-  # Überprüfen, ob g++-11 und llvm-14 verfügbar sind und installieren
-  if command -v lsb_release &> /dev/null && [[ $(lsb_release -is) == "Ubuntu" ]]; then
-    sudo apt install -y g++-11 llvm-14
-  else
-    sudo apt install -y g++ llvm
-  fi
+      libxxhash-dev vulkan-validationlayers libvulkan1 g++-11 llvm-14 \
+      llvm-dev libgsl-dev libheif-dev
 }
 
 # Funktion zum Erstellen des Build-Verzeichnisses
