@@ -142,7 +142,6 @@ build_plugins() {
     fi
 
     cat "../build-plugins/header.sh" "../build-plugins/${p}.sh" > build.sh
-
     if bash ./build.sh > "logs/${p}.log" 2>&1; then
       print_message "fertig" "done"
     else
@@ -150,11 +149,13 @@ build_plugins() {
       success=false
       failed_plugin="$p"
     fi
-
+    
     if [ -d build ]; then
       rm -rf build
     fi
-    rm -f build.sh
+    if [ -f build.sh ]; then
+      rm -f build.sh
+    fi
   done
 
   unset vsprefix

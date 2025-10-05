@@ -97,7 +97,6 @@ strip_copy() {
 
 finish() {
   strip_copy "$1"
-  cd ..
   rm -rf build
 }
 
@@ -159,11 +158,3 @@ mkghc() {
   ghc "$1" "$3"
   build "$2"
 }
-
-# Beispielaufruf der Funktionen
-# mkgh "benutzername/repo" "plugin_name"
-# mkghv "benutzername/repo" "plugin_name"
-# mkghc "benutzername/repo" "plugin_name" "branch_name"
-
-# Hier können weitere Aufrufe zu mkgh, mkghv oder mkghc hinzugefügt werden, um Plugins zu bauen.
-

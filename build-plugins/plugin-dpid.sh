@@ -11,6 +11,4 @@ cd Source
 meson setup build
 ninja -C build -j4
 finish build/libdpid.so
-cd ..
-rm -rf build
 

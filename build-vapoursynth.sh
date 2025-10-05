@@ -5,14 +5,26 @@
 # -----------------------------------------------------------------------------
 
 set -euo pipefail
-set -x  # optional: für Debug
+#set -x  # optional: für Debug
 
 JOBS=${JOBS:-4}
 s_begin=$(date "+%s")
 
-vsprefix="$HOME/opt/vapoursynth"
-export PATH="$vsprefix/bin:$PATH"
-export PKG_CONFIG_PATH="$vsprefix/lib/pkgconfig"
+if [ -f ./config.txt ]; then
+    . ./config.txt > /dev/null 2>&1
+else
+    echo "Error: config.txt not found." >&2
+    exit 1
+fi
+
+if [ -z "${VSPREFIX}" ]; then
+    echo "Error: VSPREFIX is not set."
+    exit 1
+fi
+echo "VSPREFIX is set to: $VSPREFIX"
+
+export PATH="$VSPREFIX/bin:$PATH"
+export PKG_CONFIG_PATH="$VSPREFIX/lib/pkgconfig"
 export CFLAGS="-pipe -O3 -fno-strict-aliasing -Wno-deprecated-declarations"
 export CXXFLAGS="$CFLAGS"
 
@@ -33,12 +45,12 @@ sudo apt install --no-install-recommends -y \
 mkdir -p build && cd build
 
 # NASM
-if [ ! -x "$vsprefix/bin/nasm" ]; then
+if [ ! -x "$VSPREFIX/bin/nasm" ]; then
   ver="2.14.02"
   wget -c https://www.nasm.us/pub/nasm/releasebuilds/$ver/nasm-${ver}.tar.xz
   tar xf nasm-${ver}.tar.xz
   cd "nasm-$ver"
-  ./configure --prefix="$vsprefix"
+  ./configure --prefix="$VSPREFIX"
   make -j$JOBS
   make install
   cd ..
@@ -50,7 +62,7 @@ git clone https://github.com/sekrit-twc/zimg
 cd zimg
 git checkout $(git tag | sort -V | tail -1)
 autoreconf -if
-./configure --prefix="$vsprefix"
+./configure --prefix="$VSPREFIX"
 make -j$JOBS
 make install-strip
 cd ..
@@ -60,7 +72,7 @@ git clone https://github.com/ImageMagick/ImageMagick
 cd ImageMagick
 git checkout $(git tag | grep '^7\.' | sort -V | tail -1)
 PATH="$PWD:$PATH" autoreconf -if
-./configure --prefix="$vsprefix" \
+./configure --prefix="$VSPREFIX" \
   --disable-static \
   --disable-docs \
   --without-utilities \
@@ -72,12 +84,12 @@ cd ..
 
 # NV Codec Headers
 git clone --depth 1 https://github.com/FFmpeg/nv-codec-headers
-make -C nv-codec-headers install PREFIX="$vsprefix"
+make -C nv-codec-headers install PREFIX="$VSPREFIX"
 
 # FFmpeg
 git clone --depth 1 https://github.com/FFmpeg/FFmpeg
 cd FFmpeg
-./configure --prefix="$vsprefix" \
+./configure --prefix="$VSPREFIX" \
   --disable-static \
   --enable-shared \
   --disable-programs \
@@ -98,7 +110,7 @@ git clone https://github.com/vapoursynth/vapoursynth
 cd vapoursynth
 git checkout $(git tag | grep '^R' | sort -V | tail -1)
 autoreconf -if
-./configure --prefix="$vsprefix"
+./configure --prefix="$VSPREFIX"
 make -j$JOBS
 make install-strip
 make maintainer-clean
@@ -110,15 +122,15 @@ export PYTHONUSERBASE="$PWD/temp"
 #./temp/bin/cython --3str vapoursynth/src/cython/vapoursynth.pyx
 
 # Environment file
-cat <<EOF >"$vsprefix/env.sh"
-export LD_LIBRARY_PATH="$vsprefix/lib:\$LD_LIBRARY_PATH"
-export PYTHONPATH="$vsprefix/lib/python3/site-packages:\$PYTHONPATH"
+cat <<EOF >"$VSPREFIX/env.sh"
+export LD_LIBRARY_PATH="$VSPREFIX/lib:\$LD_LIBRARY_PATH"
+export PYTHONPATH="$VSPREFIX/lib/python3/site-packages:\$PYTHONPATH"
 EOF
 
 # Vapoursynth config
 conf="$HOME/.config/vapoursynth/vapoursynth.conf"
 mkdir -p "$(dirname "$conf")"
-echo "SystemPluginDir=$vsprefix/vsplugins" > "$conf"
+echo "SystemPluginDir=$VSPREFIX/vsplugins" > "$conf"
 
 s_end=$(date "+%s")
 s=$((s_end - s_begin))
