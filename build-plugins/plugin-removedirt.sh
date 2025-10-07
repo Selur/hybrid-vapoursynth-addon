@@ -3,11 +3,11 @@
 #                                Plugin-dpid                                     #
 #                                                                                #
 #                                                                                #
-#           https://github.com/yuygfgg/removedirt                                #
+#     https://github.com/pinterf/RemoveDirt                                      #
 ##################################################################################
 
-ghdl yuygfgg/removedirtvs
-meson setup build
-ninja -C build -j4
-finish build/libremovedirtvs.so
+ghdl pinterf/RemoveDirt
+cmake .
+make
+finish RemoveDirt/libremovedirt.so
 
