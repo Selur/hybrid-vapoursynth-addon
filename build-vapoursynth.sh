@@ -40,7 +40,7 @@ sudo apt install --no-install-recommends -y \
   libfontconfig-dev libfreetype6-dev libfftw3-dev libpango1.0-dev libxml2-dev \
   python3-dev nasm cmake meson ninja-build libopencv-dev \
   libboost-dev libboost-system-dev libboost-filesystem-dev \
-  libvulkan1 vulkan-validationlayers
+  libvulkan1 vulkan-validationlayers cython3
 
 mkdir -p build && cd build
 
