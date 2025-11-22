@@ -3,21 +3,11 @@
 #                            Plugin-vs-wwxd V1.0                                 #
 #                                                                                #
 #                                                                                #
-#                  https://github.com/dubhater/vapoursynth-wwxd                  #
+#     https://github.com/Jaded-Encoding-Thaumaturgy/vapoursynth-SNEEDIF          #
 ##################################################################################
 
-#export CC=/usr/bin/gcc-11
-#export CXX=/usr/bin/g++-11
-
-ghc dubhater/vapoursynth-wwxd
-git submodule update --init
-
-build() 
-{
-   gcc -o libwwxd.so -fPIC -shared -O2 -Wall -Wextra -Wno-unused-parameter $(pkg-config --cflags vapoursynth) src/wwxd.c src/detection.c
-   finish ${1}.so
-}
-
-build libwwxd
+ghc Jaded-Encoding-Thaumaturgy/vapoursynth-SNEEDIF .
+sed -i 's/static *: *true/static: false/' meson.build
+build libsneedif
 
 
