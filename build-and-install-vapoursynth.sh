@@ -28,17 +28,17 @@ sudo apt install --no-install-recommends -y \
   libltdl-dev libva-dev libvdpau-dev libass-dev libtesseract-dev libleptonica-dev \
   zlib1g-dev libbz2-dev libjpeg-dev libpng-dev libtiff-dev liblzma-dev \
   libfontconfig-dev libfreetype6-dev libfftw3-dev libpango1.0-dev libxml2-dev \
-  python3-dev cython3 nasm cmake meson ninja-build libopencv-dev \
+  python3-dev cython3 cmake meson ninja-build libopencv-dev \
   libboost-dev libboost-system-dev libboost-filesystem-dev \
-  libvulkan1 vulkan-validationlayers
-
+  libvulkan1 vulkan-validationlayers \
+  llvm-20-dev clang-20 libclang-20-dev lld-20 liblld-20 liblld-20-dev #zig Dependencies
 mkdir -p build && cd build
 
 # -------------------------------
 # NASM
 # -------------------------------
 if [ ! -x "$vsprefix/bin/nasm" ]; then
-  ver="2.14.02"
+  ver="2.16.03"
   wget -c https://www.nasm.us/pub/nasm/releasebuilds/$ver/nasm-${ver}.tar.xz
   tar xf nasm-${ver}.tar.xz
   cd "nasm-$ver"
@@ -47,6 +47,25 @@ if [ ! -x "$vsprefix/bin/nasm" ]; then
   make install
   cd ..
   rm -rf "nasm-$ver" "nasm-${ver}.tar.xz"
+fi
+
+# -------------------------------
+# ZIG
+# -------------------------------
+if [ ! -x "$VSPREFIX/bin/zig" ]; then
+  ZIG_VERSION="0.15.2"
+  git clone --branch $ZIG_VERSION --depth 1 https://codeberg.org/ziglang/zig.git zig-$ZIG_VERSION
+  cd zig-$ZIG_VERSION
+  mkdir build
+  cd build
+  cmake .. -DCMAKE_INSTALL_PREFIX="$VSPREFIX" \
+    -DCMAKE_PREFIX_PATH="$VSPREFIX" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DZIG_VERSION="$ZIG_VERSION"
+  cmake --build . --parallel "$(nproc)" --target install
+  strip "$VSPREFIX/bin/zig" || true
+  cd ..
+  rm -rf build
 fi
 
 # -------------------------------
@@ -147,4 +166,3 @@ echo "SystemPluginDir=$vsprefix/vsplugins" > "$conf"
 s_end=$(date "+%s")
 s=$((s_end - s_begin))
 printf "\nFinished after %d min %d sec\n" $(($s / 60)) $(($s % 60))
-
