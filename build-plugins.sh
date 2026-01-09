@@ -92,7 +92,7 @@ create_build_directory() {
 # Funktion zum Installieren von NASM
 install_nasm() {
   if [ ! -x "$VSPREFIX/bin/nasm" ]; then
-    ver="2.14.02"
+    ver="2.16.03"
     wget -c "https://www.nasm.us/pub/nasm/releasebuilds/$ver/nasm-${ver}.tar.xz" || handle_error "Fehler beim Herunterladen von NASM." "Error downloading NASM."
     tar xf "nasm-${ver}.tar.xz"
     cd "nasm-$ver" || handle_error "Fehler beim Wechseln in das NASM-Verzeichnis." "Error changing to NASM directory."
@@ -197,4 +197,3 @@ main() {
 }
 
 main
-
