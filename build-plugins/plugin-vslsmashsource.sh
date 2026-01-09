@@ -36,4 +36,4 @@ ninja -C build -j $JOBS
 
 cp build/libvslsmashsource.so ../libvslsmashsource.so
 cd ..
-finish libvslsmashsource.s
+finish libvslsmashsource.so
