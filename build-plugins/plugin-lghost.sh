@@ -8,6 +8,6 @@
 
 ghdl HomeOfVapourSynthEvolution/VapourSynth-LGhost
 
-CFLAGS="$CFLAGS -Wno-deprecated-declarations" meson build --prefix="$vsprefix"
+CFLAGS="$CFLAGS -Wno-deprecated-declarations" meson setup build --prefix="$VSPREFIX"
 ninja -C build -j $JOBS
-ninja -C build install -j $JOBS
+sudo ninja -C build install -j $JOBS
