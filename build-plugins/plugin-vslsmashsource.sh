@@ -14,7 +14,7 @@ ghdl HomeOfAviSynthPlusEvolution/L-SMASH-Works
 #cd ..
 ghdl l-smash/l-smash
 
-./configure --prefix="$vsprefix" --extra-cflags="$CFLAGS" || cat config.log
+./configure --prefix="$VSPREFIX" --extra-cflags="$CFLAGS" || cat config.log
 make -j$JOBS lib
 cp liblsmash.a ..
 
@@ -27,13 +27,13 @@ liblsmash_dep = declare_dependency(link_args : ['-L../../build', '-llsmash'],\\
                                    include_directories : ['../../build'])\n" \
 -e "s/dependency('liblsmash')/liblsmash_dep/g"
 
-if [ -z "$vsprefix" ]; then
+if [ -z "$VSPREFIX" ]; then
     vsprefix="/usr/local"
 fi
 
-CFLAGS="$CFLAGS -Wno-deprecated-declarations" meson build --prefix="$vsprefix"
+CFLAGS="$CFLAGS -Wno-deprecated-declarations" meson setup build --prefix="$VSPREFIX"
 ninja -C build -j $JOBS
 
 cp build/libvslsmashsource.so ../libvslsmashsource.so
 cd ..
-finish libvslsmashsource.so
+finish libvslsmashsource.s
