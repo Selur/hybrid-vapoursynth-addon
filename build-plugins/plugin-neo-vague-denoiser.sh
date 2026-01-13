@@ -8,7 +8,7 @@
 
 git clone https://github.com/HomeOfAviSynthPlusEvolution/neo_Vague_Denoiser
 cd neo_Vague_Denoiser
-cmake .
+cmake . -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 make
 strip_copy libneo-vague-denoiser.so
 cd ..
