@@ -77,6 +77,7 @@ install_system_packages() {
       libbluray-dev libpng-dev libjansson-dev python3-testresources libxxhash-dev \
       libturbojpeg0-dev python3-setuptools python3-wheel python-is-python3 \
       libxxhash-dev vulkan-validationlayers libvulkan1 g++-11 llvm-14 \
+      dos2unix \
       llvm-dev libgsl-dev libheif-dev \
       llvm-20-dev clang-20 libclang-20-dev lld-20 liblld-20 liblld-20-dev #zig Dependencies
 }
