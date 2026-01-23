@@ -10,6 +10,11 @@
 #              including environment variables and installation paths.
 # -----------------------------------------------------------------------------
 
+# Programmversionen
+FFMPEG_VERSION=8.0.1
+NASM_VERSION=2.16.03
+ZIG_VERSION=0.15.2
+
 # Installationsverzeichnis
 # Installation directory
 export VSPREFIX="$HOME/opt/vapoursynth"
