@@ -97,15 +97,14 @@ install_nasm() {
 # NASM - The Netwide Assembler https://www.nasm.us
 # ------------------------------------------------
   if [ ! -x "$VSPREFIX/bin/nasm" ]; then
-    ver="2.16.03"
-    wget -c "https://www.nasm.us/pub/nasm/releasebuilds/$ver/nasm-${ver}.tar.xz" || handle_error "Fehler beim Herunterladen von NASM." "Error downloading NASM."
-    tar xf "nasm-${ver}.tar.xz"
-    cd "nasm-$ver" || handle_error "Fehler beim Wechseln in das NASM-Verzeichnis." "Error changing to NASM directory."
+    wget -c "https://www.nasm.us/pub/nasm/releasebuilds/${NASM_VERSION}/nasm-${NASM_VERSION}.tar.xz" || handle_error "Fehler beim Herunterladen von NASM." "Error downloading NASM."
+    tar xf "nasm-${NASM_VERSION}.tar.xz"
+    cd "nasm-${NASM_VERSION}" || handle_error "Fehler beim Wechseln in das NASM-Verzeichnis." "Error changing to NASM directory."
     ./configure --prefix="$VSPREFIX"
-    make -j"$JOBS"
+    make -j"${JOBS}"
     make install
     cd .. || handle_error "Fehler beim Zurückwechseln in das vorherige Verzeichnis." "Error changing back to the previous directory."
-    rm -rf "nasm-$ver" "nasm-${ver}.tar.xz"
+    rm -rf "nasm-${NASM_VERSION}" "nasm-${NASM_VERSION}.tar.xz"
   fi
 }
 
@@ -115,15 +114,14 @@ install_zig() {
 # ZIG https://codeberg.org/ziglang/zig
 # ------------------------------------
   if [ ! -x "$VSPREFIX/bin/zig" ]; then
-    ZIG_VERSION="0.15.2"
-    git clone --branch $ZIG_VERSION --depth 1 https://codeberg.org/ziglang/zig.git zig-$ZIG_VERSION || handle_error "Fehler beim Klonen des ZIG-Repos." "Error cloning ZIG-Repo."
-    cd zig-$ZIG_VERSION || handle_error "Fehler beim Wechseln in das ZIG-Verzeichnis." "Error changing to ZIG directory."
+    git clone --branch "${ZIG_VERSION}" --depth 1 https://codeberg.org/ziglang/zig.git "zig-${ZIG_VERSION}" || handle_error "Fehler beim Klonen des ZIG-Repos." "Error cloning ZIG-Repo."
+    cd "zig-${ZIG_VERSION}" || handle_error "Fehler beim Wechseln in das ZIG-Verzeichnis." "Error changing to ZIG directory."
     mkdir build
     cd build
     cmake .. -DCMAKE_INSTALL_PREFIX="$VSPREFIX" \
      -DCMAKE_PREFIX_PATH="$VSPREFIX" \
      -DCMAKE_BUILD_TYPE=Release \
-     -DZIG_VERSION="$ZIG_VERSION"
+     -DZIG_VERSION="${ZIG_VERSION}"
     cmake --build . --parallel "$(nproc)" --target install
     strip "$VSPREFIX/bin/zig" || true
     cd .. || handle_error "Fehler beim Zurückwechseln in das vorherige Verzeichnis." "Error changing back to the previous directory."
