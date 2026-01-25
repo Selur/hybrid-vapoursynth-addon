@@ -46,15 +46,14 @@ mkdir -p build && cd build
 
 # NASM
 if [ ! -x "$VSPREFIX/bin/nasm" ]; then
-  ver="2.14.02"
-  wget -c https://www.nasm.us/pub/nasm/releasebuilds/$ver/nasm-${ver}.tar.xz
-  tar xf nasm-${ver}.tar.xz
-  cd "nasm-$ver"
+  wget -c "https://www.nasm.us/pub/nasm/releasebuilds/${NASM_VERSION}/nasm-${NASM_VERSION}.tar.xz"
+  tar fvx "nasm-${NASM_VERSION}.tar.xz"
+  cd "nasm-${NASM_VERSION}"
   ./configure --prefix="$VSPREFIX"
-  make -j$JOBS
+  make -j"${JOBS}"
   make install
   cd ..
-  rm -rf "nasm-$ver" "nasm-${ver}.tar.xz"
+  rm -rf "nasm-${NASM_VERSION}" "nasm-${NASM_VERSION}.tar.xz"
 fi
 
 # Zimg
@@ -63,7 +62,7 @@ cd zimg
 git checkout $(git tag | sort -V | tail -1)
 autoreconf -if
 ./configure --prefix="$VSPREFIX"
-make -j$JOBS
+make -j"${JOBS}"
 make install-strip
 cd ..
 
@@ -78,7 +77,7 @@ PATH="$PWD:$PATH" autoreconf -if
   --without-utilities \
   --enable-hdri \
   --with-quantum-depth=16
-make -j$JOBS
+make -j"${JOBS}"
 make install-strip
 cd ..
 
@@ -87,8 +86,9 @@ git clone --depth 1 https://github.com/FFmpeg/nv-codec-headers
 make -C nv-codec-headers install PREFIX="$VSPREFIX"
 
 # FFmpeg
-git clone --depth 1 https://github.com/FFmpeg/FFmpeg
-cd FFmpeg
+wget -c "https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz"
+tar fvx "ffmpeg-${FFMPEG_VERSION}.tar.xz"
+cd "ffmpeg-${FFMPEG_VERSION}"
 ./configure --prefix="$VSPREFIX" \
   --disable-static \
   --enable-shared \
@@ -101,7 +101,7 @@ cd FFmpeg
   --enable-cuvid \
   --enable-vaapi \
   --enable-vdpau
-make -j$JOBS
+make -j"${JOBS}"
 make install
 cd ..
 
@@ -111,7 +111,7 @@ cd vapoursynth
 git checkout $(git tag | grep '^R' | sort -V | tail -1)
 autoreconf -if
 ./configure --prefix="$VSPREFIX"
-make -j$JOBS
+make -j"${JOBS}"
 make install-strip
 make maintainer-clean
 cd ..
