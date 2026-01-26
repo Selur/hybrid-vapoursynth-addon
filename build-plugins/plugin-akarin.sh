@@ -1,91 +1,159 @@
-###################################################################
-#                                                                 #
-#                     Plugin-Akarin v0.95                         #
-#                                                                 #
-#     https://github.com/AkarinVS/vapoursynth-plugin              #
-###################################################################
+####################################################################
+##                     Plugin-Akarin v0.95                        ##
+##              Outdated! Last commit: Mar 26, 2023               ##
+##                                                                ##
+##      https://github.com/AkarinVS/vapoursynth-plugin            ##
+####################################################################
 
-# Funktion zur Ausgabe von Meldungen in Deutsch und Englisch
+# Ubuntu 24.04 Noble: LLVM 14, 15 | Debian Trixie: LLVM 14, 15, 16
+# Akarin-Plugin erfordert LLVM < 16 (meson.build)
+
 print_message() {
   case "$LANG" in
-    de_* )
-      echo "$1"  # Deutsch
-      ;;
-    * )
-      echo "$2"  # Englisch
-      ;;
+    de_* ) echo "$1" ;;  # Deutsch
+    * )    echo "$2" ;;  # Englisch
   esac
 }
 
-# Überprüfen der LLVM-Versionen
-check_llvm_version() {
-  local version
-  version=$(llvm-config --version)
-
-# Vergleiche die Versionen
-  if ! printf "%s\n10.0" "$version" | sort -C || printf "%s\n16" "$version" | sort -C; then
-    print_message "Die installierte LLVM-Version ($version) entspricht nicht den Anforderungen." "The installed LLVM version ($version) does not meet the requirements."
+# Prüft llvm-config auf kompatible Version pro Distribution
+check_llvm_compatible() {
+  if ! command -v llvm-config >/dev/null 2>&1; then
+    print_message \
+      "llvm-config nicht gefunden." \
+      "llvm-config not found."
     return 1
   fi
 
-  print_message "Die installierte LLVM-Version ($version) entspricht den Anforderungen." "The installed LLVM version ($version) meets the requirements."
+  local full_version version distro codename
+  full_version=$(llvm-config --version)
+  version=${full_version%%.*}
+
+  distro=$(lsb_release -is 2>/dev/null || echo "unknown")
+  codename=$(lsb_release -cs 2>/dev/null || echo "unknown")
+
+  # Ubuntu Noble: 14 oder 15 (<16)
+  if [[ "$distro" == "Ubuntu" && "$codename" == "noble" ]]; then
+    if [ "$version" != "14" ] && [ "$version" != "15" ]; then
+      print_message \
+        "Ubuntu Noble: Falsche LLVM-Version $full_version (erwartet 14/15)" \
+        "Ubuntu Noble: Wrong LLVM $full_version (need 14/15)"
+      return 1
+    fi
+  # Debian Trixie: 14, 15 oder 16 
+  elif [[ "$distro" == "Debian" && "$codename" == "trixie" ]]; then
+    if [ "$version" != "14" ] && [ "$version" != "15" ] && [ "$version" != "16" ]; then
+      print_message \
+        "Debian Trixie: Falsche LLVM-Version $full_version (erwartet 14/15/16)" \
+        "Debian Trixie: Wrong LLVM $full_version (need 14/15/16)"
+      return 1
+    fi
+  else
+    print_message \
+      "Unterstützte Systeme: Ubuntu Noble | Debian Trixie (gefunden: $distro $codename)" \
+      "Supported: Ubuntu Noble | Debian Trixie (found: $distro $codename)"
+    return 1
+  fi
+
+  print_message \
+    "$distro $codename: LLVM $full_version ✓ (Akarin-kompatibel)" \
+    "$distro $codename: LLVM $full_version ✓ (Akarin compatible)"
   return 0
 }
 
-# Installieren der höchsten zulässigen Version von LLVM
-install_llvm() {
-  if [[ -f /etc/debian_version ]]; then
-    # Debian oder Ubuntu
-    if [[ $(lsb_release -is) == "Debian" && $(lsb_release -cs) == "trixie" ]] || [[ $(lsb_release -is) == "Ubuntu" && $(lsb_release -cs) == "noble" ]]; then
-      print_message "Überprüfe und installiere die zulässigen LLVM-Pakete..." "Checking and installing the allowed LLVM packages..."
-      # Update der Paketliste
-      sudo apt update
+# Installiert optimale LLVM-Version pro Distribution
+install_llvm_supported() {
+  local distro codename llvm_version
+  distro=$(lsb_release -is 2>/dev/null || echo "unknown")
+  codename=$(lsb_release -cs 2>/dev/null || echo "unknown")
 
-      # Installieren der spezifischen Version 14
-      local llvm_version="14"
-      print_message "Installiere LLVM Version $llvm_version..." "Installing LLVM version $llvm_version..."
-      sudo apt install -y llvm-"$llvm_version" llvm-"$llvm_version"-dev 
+  if [[ "$distro" != "Ubuntu" && "$distro" != "Debian" ]]; then
+    print_message \
+      "Nur Ubuntu/Debian unterstützt." \
+      "Only Ubuntu/Debian supported."
+    return 1
+  fi
 
-      print_message "LLVM-Pakete wurden installiert." "LLVM packages have been installed."
-    else
-      print_message "Dieses Skript unterstützt nur Debian Trixie oder Ubuntu 24.04 LTS (Noble)." "This script only supports Debian Trixie or Ubuntu 24.04 LTS (Noble)."
-    fi
+  # Ubuntu Noble → LLVM 14 (stabilste)
+  if [[ "$distro" == "Ubuntu" && "$codename" == "noble" ]]; then
+    llvm_version="14"
+    print_message \
+      "Ubuntu Noble → Installiere LLVM $llvm_version..." \
+      "Ubuntu Noble → Installing LLVM $llvm_version..."
+    sudo apt update && sudo apt install -y llvm-"$llvm_version" llvm-"$llvm_version"-dev
+
+  # Debian Trixie → LLVM 14 (stabilste, auch wenn 16 verfügbar)
+  elif [[ "$distro" == "Debian" && "$codename" == "trixie" ]]; then
+    llvm_version="14"
+    print_message \
+      "Debian Trixie → Installiere LLVM $llvm_version..." \
+      "Debian Trixie → Installing LLVM $llvm_version..."
+    sudo apt update && sudo apt install -y llvm-"$llvm_version" llvm-"$llvm_version"-dev
   else
-    print_message "Dieses Skript kann nur auf Debian-basierten Systemen ausgeführt werden." "This script can only be run on Debian-based systems."
+    print_message \
+      "Nur Ubuntu Noble | Debian Trixie (gefunden: $distro $codename)" \
+      "Only Ubuntu Noble | Debian Trixie (found: $distro $codename)"
+    return 1
   fi
 }
 
-# Setzen von llvm-config auf Version 14
-set_llvm_config_version() {
-  print_message "Setze llvm-config auf Version 14..." "Setting llvm-config to version 14..."
+# llvm-config auf LLVM 14 setzen (optimale Version für beide Dists)
+setup_llvm_config() {
+  local llvm_version="14"
+  print_message \
+    "llvm-config → Version $llvm_version (Priorität 200)..." \
+    "llvm-config → version $llvm_version (priority 200)..."
 
-  # Füge die llvm-config Versionen zu update-alternatives hinzu
-  sudo update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-14 100
+  # LLVM 14 mit höchster Priorität
+  sudo update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-14 200 \
+    || print_message "Warnung: llvm-config-14 nicht gefunden" "Warning: llvm-config-14 not found"
 
-  # Setze die Standardversion auf 14
+  # LLVM 15 (Priorität 150) - Ubuntu Noble
+  sudo update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-15 150 2>/dev/null || true
+
+  # LLVM 16 (Priorität 100) - Debian Trixie Fallback
+  sudo update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-16 100 2>/dev/null || true
+
+  # LLVM 14 als Standard setzen
   sudo update-alternatives --set llvm-config /usr/bin/llvm-config-14
 
-  print_message "Die llvm-config-Version wurde auf 14 gesetzt." "The llvm-config version has been set to 14."
+  # Verifikation
+  if command -v llvm-config >/dev/null 2>&1; then
+    local version=$(llvm-config --version)
+    print_message "llvm-config → $version ✓" "llvm-config → $version ✓"
+  fi
 }
 
-# Setzen der LLVM_CONFIG-Variable
-set_llvm_config_variable() {
-  export LLVM_CONFIG=$(which llvm-config)
-  print_message "Die LLVM_CONFIG-Variable wurde auf $LLVM_CONFIG gesetzt." "The LLVM_CONFIG variable has been set to $LLVM_CONFIG."
+# Umgebungsvariable setzen
+export_llvm_config() {
+  export LLVM_CONFIG=$(command -v llvm-config)
+  print_message "LLVM_CONFIG='$LLVM_CONFIG' ✓" "LLVM_CONFIG='$LLVM_CONFIG' ✓"
 }
 
-# Hauptlogik
-if check_llvm_version; then
-  print_message "Die erforderlichen LLVM-Pakete sind bereits installiert." "The required LLVM packages are already installed."
-else
-  install_llvm
-fi
+# HAUPTLOGIK
+main() {
+  echo
+  echo "=== Akarin Plugin - Outdated! LLVM Setup ==="
+  echo "Repo: https://github.com/AkarinVS/vapoursynth-plugin"
+  echo
 
-# Setzen von llvm-config auf Version 14
-set_llvm_config_version
+  if check_llvm_compatible; then
+    print_message "LLVM bereits korrekt." "LLVM already correct."
+  else
+    if ! install_llvm_supported; then
+      print_message "Installation fehlgeschlagen." "Installation failed."
+      exit 1
+    fi
+    setup_llvm_config
+  fi
 
-# Setzen der LLVM_CONFIG-Variable
-set_llvm_config_variable
+  export_llvm_config
+  print_message \
+    "✓ FERTIG! Starte jetzt: Klonen des Repositories und Kompilieren des Plugins/" \
+    "✓ DONE! Now run: Cloning the repository and compiling the plugin/"
+}
+
+# Ausführen
+main
 
 # Beispielaufruf für mkgh
 mkgh AkarinVS/vapoursynth-plugin libakarin
