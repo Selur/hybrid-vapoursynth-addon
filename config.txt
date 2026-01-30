@@ -14,6 +14,7 @@
 FFMPEG_VERSION=8.0.1
 NASM_VERSION=2.16.03
 ZIG_VERSION=0.15.2
+VAPOURSYNTH_VERSION="R73"
 
 # Installationsverzeichnis
 # Installation directory

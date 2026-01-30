@@ -108,7 +108,7 @@ cd ..
 # VapourSynth
 git clone https://github.com/vapoursynth/vapoursynth
 cd vapoursynth
-git checkout $(git tag | grep '^R' | sort -V | tail -1)
+git checkout "$VAPOURSYNTH_VERSION"
 autoreconf -if
 ./configure --prefix="$VSPREFIX"
 make -j"${JOBS}"
