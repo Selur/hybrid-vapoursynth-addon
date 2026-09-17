@@ -1,3 +1,5 @@
+Archived, since newer Hybrid comes as an AppImage (https://github.com/Selur/HybridDeploy) which comes with the filters, which are taken from pip.
+
 These build scripts are for Ubuntu 24.04 LTS and Debian Sid (in future the coming Debian 13) tested only.
 The used Python version is Python 3.12.
 Scripts are rewritten.They are slightly more modular. German and English messages were added.
